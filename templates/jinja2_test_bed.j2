@@ -1,0 +1,17 @@
+Host name is {{ ansible_facts["hostname"] }}.
+
+Value is {{ ansible_facts["hostnames"] | default(5) }}
+Value is {{ ansible_facts["hostname"] | default(5) }}
+{{ lookup('env', 'HOME') | default('/home/punit', true) }} {# Sets default value of the variable if it is false or an empty string. #}
+
+{{ lookup('env', 'HOMES') | default('/home/punit', true) }} {# Sets default value of the variable if it is false or an empty string. #}
+
+{{ lookup('env', 'HOMES') | default('/home/punit', false) }} {# Sets default value of the variable if it is false or an empty string. #}
+
+nothing printed when its false.
+
+{% comment %} {{ ansible_facts["hostnames"] }}
+{{ ansible_facts["hostnames"] | mandatory }}
+DEFAULT_UNDEFINED_VAR_BEHAVIOR = false
+{{ ansible_facts["hostnames"] }}
+{{ ansible_facts["hostnames"] | mandatory }} {% endcomment %}

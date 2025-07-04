@@ -1,0 +1,107 @@
+---
+# - name: "My First Playbook"
+#   hosts: "rhel10"
+#   tasks:
+#       - name: "Ping"
+#         ansible.builtin.ping: null
+#       - name: "Print"
+#         ansible.builtin.debug:
+#             msg: "Hello, world!"
+# - name: "iptables"
+#   hosts: "rhel10"
+#   tasks:
+#       - name: "Allow Access From 10.0.0.1"
+#         become: true
+#         ansible.builtin.iptables:
+#             chain: "INPUT"
+#             jump: "ACCEPT"
+#             source: "10.0.0.1"
+#             state: "absent"
+# - name: "Ensure Line Is In File"
+#   hosts: "rhel10"
+#   tasks:
+#       - name: "Line In '.bashrc' Using 'lineinfile'"
+#         ansible.builtin.lineinfile:
+#             path: ".bashrc"
+#             line: "export PS1='\n\\[\e[00;30m\\]#\\[\e[01;32m\\]$pLINENO\\[\e[00;30m\\]|\\[\e[01;34m\\]$?\\[\e[00;30m\\]|\\[\e[01;32m\\]`date +%F`\\[\e[00;30m\\]T\\[\e[01;34m\\]`date +%T`\\[\e[00;30m\\]|\\[\e[01;36m\\]\\u\\[\e[00;30m\\]@\\[\e[01;35m\\]\\h\\[\e[00;30m\\]:\\[\e[01;33m\\]\\w\\[\e[0m\\]\n\\[\e[01;31m\\]\\$\\[\e[0m\\] '"
+#             state: "present"
+#       - name: "Line In '.bashrc' Using 'copy'."
+#         ansible.builtin.copy:
+#             content: "export PS1='\\n\\[\\e[00;30m\\]#\\[\\e[01;32m\\]$LINENO\\[\\e[00;30m\\]|\\[\\e[01;34m\\]$?\\[\\e[00;30m\\]|\\[\\e[01;32m\\]`date +%F`\\[\\e[00;30m\\]T\\[\\e[01;34m\\]`date +%T`\\[\\e[00;30m\\]|\\[\\e[01;36m\\]\\u\\[\\e[00;30m\\]@\\[\\e[01;35m\\]\\h\\[\\e[00;30m\\]:\\[\\e[01;33m\\]\\w\\[\\e[0m\\]\\n\\[\\e[01;31m\\]\\$\\[\\e[0m\\] '\n"
+#             dest: ".bashrc"
+
+# [
+#     {
+#         name: "My First Playbook",
+#         hosts: "rhel10",
+#         tasks:
+#             [
+#                 {name: "Ping", ansible.builtin.ping: null},
+#                 {name: "Print", ansible.builtin.debug: {msg: "Hello, world!"}},
+#             ],
+#     },
+#     {
+#         name: "iptables",
+#         hosts: "rhel10",
+#         tasks:
+#             [
+#                 {
+#                     name: "Allow Access From 10.0.0.1",
+#                     become: true,
+#                     ansible.builtin.iptables:
+#                         {
+#                             chain: "INPUT",
+#                             jump: "ACCEPT",
+#                             source: "10.0.0.1",
+#                             state: "absent",
+#                         },
+#                 },
+#             ],
+#     },
+#     {
+#         name: "Ensure Line Is In File",
+#         hosts: "rhel10",
+#         tasks:
+#             [
+#                 {
+#                     name: "Line In '.bashrc' Using 'lineinfile'",
+#                     ansible.builtin.lineinfile:
+#                         {
+#                             path: ".bashrc",
+#                             line: "export PS1='\n\\[\u001b[00;30m\\]#\\[\u001b[01;32m\\]$LINENO\\[\u001b[00;30m\\]|\\[\u001b[01;34m\\]$?\\[\u001b[00;30m\\]|\\[\u001b[01;32m\\]`date +%F`\\[\u001b[00;30m\\]T\\[\u001b[01;34m\\]`date +%T`\\[\u001b[00;30m\\]|\\[\u001b[01;36m\\]\\u\\[\u001b[00;30m\\]@\\[\u001b[01;35m\\]\\h\\[\u001b[00;30m\\]:\\[\u001b[01;33m\\]\\w\\[\u001b[0m\\]\n\\[\u001b[01;31m\\]\\$\\[\u001b[0m\\] '",
+#                             state: "present",
+#                         },
+#                 },
+#                 {
+#                     name: "Line In '.bashrc' Using 'copy'",
+#                     ansible.builtin.copy:
+#                         {
+#                             content: "export PS1='\\n\\[\\e[00;30m\\]#\\[\\e[01;32m\\]$LINENO\\[\\e[00;30m\\]|\\[\\e[01;34m\\]$?\\[\\e[00;30m\\]|\\[\\e[01;32m\\]`date +%F`\\[\\e[00;30m\\]T\\[\\e[01;34m\\]`date +%T`\\[\\e[00;30m\\]|\\[\\e[01;36m\\]\\u\\[\\e[00;30m\\]@\\[\\e[01;35m\\]\\h\\[\\e[00;30m\\]:\\[\\e[01;33m\\]\\w\\[\\e[0m\\]\\n\\[\\e[01;31m\\]\\$\\[\\e[0m\\] '\n",
+#                             dest: ".bashrc",
+#                         },
+#                 },
+#             ],
+#     },
+# ]
+
+- name: "Jinja2 Test Bed"
+  hosts: "rhel10"
+  tasks:
+      - name: "Write hostname"
+        ansible.builtin.template:
+            src: "templates/host_name.j2"
+            dest: "tmp/hostname"
+      - name: "Write Variable Value To A Text File"
+        ansible.builtin.template:
+            src: "templates/jinja2_test_bed.j2"
+            dest: "tmp/jinja2.txt"
+      - name: "touch Files With An Optional Mode"
+        ansible.builtin.file:
+            path: "{{ item.fileName }}"
+            state: touch
+            mode: "{{ item.mode | default(omit) }}"
+        loop:
+            - fileName: tmp/foo
+            - fileName: tmp/bar
+              mode: "0444"
+            - fileName: tmp/baz

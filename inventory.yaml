@@ -1,0 +1,11 @@
+all:
+    hosts:
+        rhel10clients:
+            ansible_host: 172.16.65.20
+            ansible_user: root
+        rhel10server1:
+            ansible_host: 172.16.65.21
+        rhel10server2:
+            ansible_host: 172.16.65.22
+        rhel10server3:
+            ansible_host: 172.16.65.23
