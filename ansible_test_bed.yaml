@@ -1,6 +1,8 @@
 ---
+- import_playbook sync_time.yaml
+
 # - name: "My First Playbook"
-#   hosts: "rhel10"
+#   hosts: "all"
 #   tasks:
 #       - name: "Ping"
 #         ansible.builtin.ping: null
@@ -8,7 +10,7 @@
 #         ansible.builtin.debug:
 #             msg: "Hello, world!"
 # - name: "iptables"
-#   hosts: "rhel10"
+#   hosts: "all"
 #   tasks:
 #       - name: "Allow Access From 10.0.0.1"
 #         become: true
@@ -18,7 +20,7 @@
 #             source: "10.0.0.1"
 #             state: "absent"
 # - name: "Ensure Line Is In File"
-#   hosts: "rhel10"
+#   hosts: "all"
 #   tasks:
 #       - name: "Line In '.bashrc' Using 'lineinfile'"
 #         ansible.builtin.lineinfile:
@@ -33,7 +35,7 @@
 # [
 #     {
 #         name: "My First Playbook",
-#         hosts: "rhel10",
+#         hosts: "all",
 #         tasks:
 #             [
 #                 {name: "Ping", ansible.builtin.ping: null},
@@ -42,7 +44,7 @@
 #     },
 #     {
 #         name: "iptables",
-#         hosts: "rhel10",
+#         hosts: "all",
 #         tasks:
 #             [
 #                 {
@@ -60,7 +62,7 @@
 #     },
 #     {
 #         name: "Ensure Line Is In File",
-#         hosts: "rhel10",
+#         hosts: "all",
 #         tasks:
 #             [
 #                 {
@@ -85,23 +87,86 @@
 # ]
 
 - name: "Jinja2 Test Bed"
-  hosts: "rhel10"
+  hosts: all
+  environment:
+      TERM: xterm
+  vars:
+      url: "http://example.com/~user/blog/title/foo-bar-baz"
+      var_hosts: "{{ lookup('file', '/etc/hosts') }}"
+      motd_content: "{{ lookup('file', '/etc/motd') }}"
   tasks:
-      - name: "Write hostname"
-        ansible.builtin.template:
-            src: "templates/host_name.j2"
-            dest: "tmp/hostname"
-      - name: "Write Variable Value To A Text File"
-        ansible.builtin.template:
-            src: "templates/jinja2_test_bed.j2"
-            dest: "tmp/jinja2.txt"
-      - name: "touch Files With An Optional Mode"
-        ansible.builtin.file:
-            path: "{{ item.fileName }}"
-            state: touch
-            mode: "{{ item.mode | default(omit) }}"
-        loop:
-            - fileName: tmp/foo
-            - fileName: tmp/bar
-              mode: "0444"
-            - fileName: tmp/baz
+      # - name: "Write to hostname"
+      #   ansible.builtin.template:
+      #       src: "templates/host_name.j2"
+      #       dest: "tmp/hostname"
+      # - name: "Write Template To A Text File"
+      #   ansible.builtin.template:
+      #       src: "templates/jinja2_test_bed.j2"
+      #       dest: "tmp/jinja2.txt"
+      # - name: "touch Files With An Optional Mode"
+      #   ansible.builtin.file:
+      #       path: "{{ item.fileName }}"
+      #       state: touch
+      #       mode: "{{ item.mode | default(omit) }}"
+      #   loop:
+      #       - fileName: tmp/foo
+      #       - fileName: tmp/bar
+      #         mode: "0444"
+      #       n- fileName: tmp/baz
+      # - name: "Test Test1"
+      #   ansible.builtin.debug:
+      #       msg: "Matched pattern 1"
+      #   when: url is match("http://example.com/~user/blog/.*/foo-bar-baz")
+      # - name: "Test Test2"
+      #   ansible.builtin.debug:
+      #       msg: "Matched pattern 2"
+      #   when: url is search("user/.*/title/.*")
+      # - name: "Test Test3"
+      #   ansible.builtin.debug:
+      #       msg: "Matched pattern 3"
+      #   when: url is search("users")
+      # - name: "Test Test4"
+      #   ansible.builtin.debug:
+      #       msg: "matched pattern 4"
+      #   when: url is regex("example\.com/\w+/foo")
+      # - name: "Test Tests"
+      #   block:
+      #       - name: "Test Test1"
+      #         ansible.builtin.debug:
+      #             msg: "Matched pattern 1"
+      #         when: url is match("http://example.com/~user/blog/.*/foo-bar-baz")
+      #       - name: "Test Test2"
+      #         ansible.builtin.debug:
+      #             msg: "Matched pattern 2"
+      #         when: url is search("user/.*/title/.*")
+      #       - name: "Test Test3"
+      #         ansible.builtin.debug:
+      #             msg: "Matched pattern 3"
+      #         when: url is search("users")
+      #       - name: "Test Test4"
+      #         ansible.builtin.debug:
+      #             msg: "matched pattern 4"
+      #         when: url is regex("example\.com/\w+/foo")
+      #       - name: "Test Test5"
+      #         ansible.builtin.debug:
+      #             msg: "matched pattern 4"
+      #         when: url is not regex("example\.com/\w+/foo")
+      - name: "Test lookup."
+        # become: true
+        block:
+            - name: "/etc/hosts"
+              ansible.builtin.debug:
+                  msg: "Value of 'var_hosts' is {{ var_hosts }}"
+            # - name: "/etc/motd"
+            #   ansible.builtin.debug:
+            #       msg: "Value of 'motd_content' is {{ motd_content }}"
+      - name: "lookup and q"
+        block:
+            - name: "lookup"
+              ansible.builtin.debug:
+                  msg: "{{  item }}"
+              loop: "{{ lookup('ns.col.lookup_items', wantlist = True) }}"
+            - name: "q"
+              ansible.builtin.debug:
+                  msg: "{{ item }}"
+              loop: "{{ q('ns.col.lookup_items') }}"

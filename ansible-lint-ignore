@@ -1,6 +1,0 @@
-# This file contains ignores rule violations for ansible-lint
-ansible_test_bed.yaml risky-file-permissions
-ansible_test_bed.yaml yaml[line-length]
-ansible_test_bed.yaml yaml[trailing-spaces]
-ansible_test_bed.yaml yaml[indentation]
-ansible_test_bed.yaml name[casing]

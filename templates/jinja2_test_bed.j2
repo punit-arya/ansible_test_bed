@@ -1,17 +1,12 @@
-Host name is {{ ansible_facts["hostname"] }}.
+Host name is {{ ansible_facts["hostname"] | default(5) }}
+Host name is {{ ansible_facts["hostnames"] | default(5) }}
+1: {{ lookup("env", "HOME") | default("/home/punit", true) }} {# Sets default value of the variable if it is false or an empty string. #}
+{# 1a: Looking up using ansible_facts {{ ansible_facts["HOME"] }}	{# HOME can"t be read via ansible_facts["HOME"]" #}
 
-Value is {{ ansible_facts["hostnames"] | default(5) }}
-Value is {{ ansible_facts["hostname"] | default(5) }}
-{{ lookup('env', 'HOME') | default('/home/punit', true) }} {# Sets default value of the variable if it is false or an empty string. #}
-
-{{ lookup('env', 'HOMES') | default('/home/punit', true) }} {# Sets default value of the variable if it is false or an empty string. #}
-
-{{ lookup('env', 'HOMES') | default('/home/punit', false) }} {# Sets default value of the variable if it is false or an empty string. #}
-
-nothing printed when its false.
-
-{% comment %} {{ ansible_facts["hostnames"] }}
-{{ ansible_facts["hostnames"] | mandatory }}
-DEFAULT_UNDEFINED_VAR_BEHAVIOR = false
-{{ ansible_facts["hostnames"] }}
-{{ ansible_facts["hostnames"] | mandatory }} {% endcomment %}
+2: {{ lookup("env", "HOMES") | default("/home/punit", true) }}
+3: {{ lookup("env", "HOME") | default("/home/punit", false) }}
+4: {{ lookup("env", "HOMES") | default("/home/punit", false) }}
+{# {{ ansible_facts["hostnames"] | mandatory }} #}
+galaxy_api_key is {{ galaxy_api_key }}
+{{ (status == "needs_restart") | ternary("status is needs_restart", "status isn't needs_restart") }}
+{{ enabled | ternary("enabled is true", "enabled is false", omit) }}
