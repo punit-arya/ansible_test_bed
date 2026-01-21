@@ -1,1 +1,8 @@
 ---
+- name: "Get Date And Time"
+  hosts: all
+  tasks:
+      - name: "Get Date And Time"
+        ansible.builtin.command:
+            cmd: "date"
+        changed_when: false

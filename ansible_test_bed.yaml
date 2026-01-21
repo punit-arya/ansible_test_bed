@@ -1,172 +1,233 @@
----
-- import_playbook sync_time.yaml
-
-# - name: "My First Playbook"
-#   hosts: "all"
-#   tasks:
-#       - name: "Ping"
-#         ansible.builtin.ping: null
-#       - name: "Print"
-#         ansible.builtin.debug:
-#             msg: "Hello, world!"
-# - name: "iptables"
-#   hosts: "all"
-#   tasks:
-#       - name: "Allow Access From 10.0.0.1"
-#         become: true
-#         ansible.builtin.iptables:
-#             chain: "INPUT"
-#             jump: "ACCEPT"
-#             source: "10.0.0.1"
-#             state: "absent"
-# - name: "Ensure Line Is In File"
-#   hosts: "all"
-#   tasks:
-#       - name: "Line In '.bashrc' Using 'lineinfile'"
-#         ansible.builtin.lineinfile:
-#             path: ".bashrc"
-#             line: "export PS1='\n\\[\e[00;30m\\]#\\[\e[01;32m\\]$pLINENO\\[\e[00;30m\\]|\\[\e[01;34m\\]$?\\[\e[00;30m\\]|\\[\e[01;32m\\]`date +%F`\\[\e[00;30m\\]T\\[\e[01;34m\\]`date +%T`\\[\e[00;30m\\]|\\[\e[01;36m\\]\\u\\[\e[00;30m\\]@\\[\e[01;35m\\]\\h\\[\e[00;30m\\]:\\[\e[01;33m\\]\\w\\[\e[0m\\]\n\\[\e[01;31m\\]\\$\\[\e[0m\\] '"
-#             state: "present"
-#       - name: "Line In '.bashrc' Using 'copy'."
-#         ansible.builtin.copy:
-#             content: "export PS1='\\n\\[\\e[00;30m\\]#\\[\\e[01;32m\\]$LINENO\\[\\e[00;30m\\]|\\[\\e[01;34m\\]$?\\[\\e[00;30m\\]|\\[\\e[01;32m\\]`date +%F`\\[\\e[00;30m\\]T\\[\\e[01;34m\\]`date +%T`\\[\\e[00;30m\\]|\\[\\e[01;36m\\]\\u\\[\\e[00;30m\\]@\\[\\e[01;35m\\]\\h\\[\\e[00;30m\\]:\\[\\e[01;33m\\]\\w\\[\\e[0m\\]\\n\\[\\e[01;31m\\]\\$\\[\\e[0m\\] '\n"
-#             dest: ".bashrc"
-
-# [
-#     {
-#         name: "My First Playbook",
-#         hosts: "all",
-#         tasks:
-#             [
-#                 {name: "Ping", ansible.builtin.ping: null},
-#                 {name: "Print", ansible.builtin.debug: {msg: "Hello, world!"}},
-#             ],
-#     },
-#     {
-#         name: "iptables",
-#         hosts: "all",
-#         tasks:
-#             [
-#                 {
-#                     name: "Allow Access From 10.0.0.1",
-#                     become: true,
-#                     ansible.builtin.iptables:
-#                         {
-#                             chain: "INPUT",
-#                             jump: "ACCEPT",
-#                             source: "10.0.0.1",
-#                             state: "absent",
-#                         },
-#                 },
-#             ],
-#     },
-#     {
-#         name: "Ensure Line Is In File",
-#         hosts: "all",
-#         tasks:
-#             [
-#                 {
-#                     name: "Line In '.bashrc' Using 'lineinfile'",
-#                     ansible.builtin.lineinfile:
-#                         {
-#                             path: ".bashrc",
-#                             line: "export PS1='\n\\[\u001b[00;30m\\]#\\[\u001b[01;32m\\]$LINENO\\[\u001b[00;30m\\]|\\[\u001b[01;34m\\]$?\\[\u001b[00;30m\\]|\\[\u001b[01;32m\\]`date +%F`\\[\u001b[00;30m\\]T\\[\u001b[01;34m\\]`date +%T`\\[\u001b[00;30m\\]|\\[\u001b[01;36m\\]\\u\\[\u001b[00;30m\\]@\\[\u001b[01;35m\\]\\h\\[\u001b[00;30m\\]:\\[\u001b[01;33m\\]\\w\\[\u001b[0m\\]\n\\[\u001b[01;31m\\]\\$\\[\u001b[0m\\] '",
-#                             state: "present",
-#                         },
-#                 },
-#                 {
-#                     name: "Line In '.bashrc' Using 'copy'",
-#                     ansible.builtin.copy:
-#                         {
-#                             content: "export PS1='\\n\\[\\e[00;30m\\]#\\[\\e[01;32m\\]$LINENO\\[\\e[00;30m\\]|\\[\\e[01;34m\\]$?\\[\\e[00;30m\\]|\\[\\e[01;32m\\]`date +%F`\\[\\e[00;30m\\]T\\[\\e[01;34m\\]`date +%T`\\[\\e[00;30m\\]|\\[\\e[01;36m\\]\\u\\[\\e[00;30m\\]@\\[\\e[01;35m\\]\\h\\[\\e[00;30m\\]:\\[\\e[01;33m\\]\\w\\[\\e[0m\\]\\n\\[\\e[01;31m\\]\\$\\[\\e[0m\\] '\n",
-#                             dest: ".bashrc",
-#                         },
-#                 },
-#             ],
-#     },
-# ]
-
-- name: "Jinja2 Test Bed"
-  hosts: all
-  environment:
-      TERM: xterm
-  vars:
-      url: "http://example.com/~user/blog/title/foo-bar-baz"
-      var_hosts: "{{ lookup('file', '/etc/hosts') }}"
-      motd_content: "{{ lookup('file', '/etc/motd') }}"
+- name: Grand Old Test-Bed
+  hosts: rhel10
+  become: true
+  vars_files:
+    vars.yml
   tasks:
-      # - name: "Write to hostname"
-      #   ansible.builtin.template:
-      #       src: "templates/host_name.j2"
-      #       dest: "tmp/hostname"
-      # - name: "Write Template To A Text File"
-      #   ansible.builtin.template:
-      #       src: "templates/jinja2_test_bed.j2"
-      #       dest: "tmp/jinja2.txt"
-      # - name: "touch Files With An Optional Mode"
-      #   ansible.builtin.file:
-      #       path: "{{ item.fileName }}"
-      #       state: touch
-      #       mode: "{{ item.mode | default(omit) }}"
-      #   loop:
-      #       - fileName: tmp/foo
-      #       - fileName: tmp/bar
-      #         mode: "0444"
-      #       n- fileName: tmp/baz
-      # - name: "Test Test1"
-      #   ansible.builtin.debug:
-      #       msg: "Matched pattern 1"
-      #   when: url is match("http://example.com/~user/blog/.*/foo-bar-baz")
-      # - name: "Test Test2"
-      #   ansible.builtin.debug:
-      #       msg: "Matched pattern 2"
-      #   when: url is search("user/.*/title/.*")
-      # - name: "Test Test3"
-      #   ansible.builtin.debug:
-      #       msg: "Matched pattern 3"
-      #   when: url is search("users")
-      # - name: "Test Test4"
-      #   ansible.builtin.debug:
-      #       msg: "matched pattern 4"
-      #   when: url is regex("example\.com/\w+/foo")
-      # - name: "Test Tests"
-      #   block:
-      #       - name: "Test Test1"
-      #         ansible.builtin.debug:
-      #             msg: "Matched pattern 1"
-      #         when: url is match("http://example.com/~user/blog/.*/foo-bar-baz")
-      #       - name: "Test Test2"
-      #         ansible.builtin.debug:
-      #             msg: "Matched pattern 2"
-      #         when: url is search("user/.*/title/.*")
-      #       - name: "Test Test3"
-      #         ansible.builtin.debug:
-      #             msg: "Matched pattern 3"
-      #         when: url is search("users")
-      #       - name: "Test Test4"
-      #         ansible.builtin.debug:
-      #             msg: "matched pattern 4"
-      #         when: url is regex("example\.com/\w+/foo")
-      #       - name: "Test Test5"
-      #         ansible.builtin.debug:
-      #             msg: "matched pattern 4"
-      #         when: url is not regex("example\.com/\w+/foo")
-      - name: "Test lookup."
-        # become: true
-        block:
-            - name: "/etc/hosts"
-              ansible.builtin.debug:
-                  msg: "Value of 'var_hosts' is {{ var_hosts }}"
-            # - name: "/etc/motd"
-            #   ansible.builtin.debug:
-            #       msg: "Value of 'motd_content' is {{ motd_content }}"
-      - name: "lookup and q"
-        block:
-            - name: "lookup"
-              ansible.builtin.debug:
-                  msg: "{{  item }}"
-              loop: "{{ lookup('ns.col.lookup_items', wantlist = True) }}"
-            - name: "q"
-              ansible.builtin.debug:
-                  msg: "{{ item }}"
-              loop: "{{ q('ns.col.lookup_items') }}"
+    # - name: Install EPEL repo.
+    #   yum: name=epel-release state=present
+
+    # - name: Import Remi GPG key.
+    #   rpm_key:
+    #     key: "https://rpms.remirepo.net/RPM-GPG-KEY-remi"
+    #     state: present
+
+    # - name: Install Remi repo.
+    #   yum:
+    #     name: "https://rpms.remirepo.net/enterprise/remi-release-7.rpm"
+    #     state: present
+
+    - name: Check list of running Node.js apps.
+      command: /usr/local/bin/forever list
+      register: forever_list
+      changed_when: false
+
+    - name: Start example Node.js app.
+      command: "/usr/local/bin/forever start {{ node_apps_location }}/app/app.js"
+      when: "forever_list.stdout.find(node_apps_location + '/app/app.js') == -1"
+
+    # - name: Ensure firewalld is stopped (since this is for testing).
+    #   service: name=firewalld state=stopped
+    # - name: Install Node.js and npm.
+    #   yum: name=npm state=present enablerepo=epel
+    # - name: Install Forever (to run our Node.js app).
+    #   npm: name=forever global=yes state=present
+    # - name: Ensure Node.js app folder exists.
+    #   file: "path={{ node_apps_location }} state=directory"
+    # - name: Copy example Node.js app to server.
+    #   copy: "src=app dest={{ node_apps_location }}"
+    # - name: Install app dependencies defined in package.json.
+    #   npm: path={{ node_apps_location }}/app
+
+    # - name: Install Apache.
+    #   yum:
+    #     name:
+    #       - httpd
+    #       - httpd-devel
+    #     state: present
+    # - name: Copy configuration files.
+    #   copy:
+    #     src: "{{ item.src }}"
+    #     dest: "{{ item.dest }}"
+    #     owner: root
+    #     group: root
+    #     mode: 644
+    #   with_items:
+    #     - src: httpd.conf
+    #       dest: /etc/httpd/conf/httpd.conf
+    #     - src: httpd-vhosts.conf
+    #       dest: /etc/httpd/conf/httpd-vhosts.conf
+    # - name: Make sure Apache is started now and at boot.
+    #   service:
+    #     name: httpd
+    #     state: started
+    #     enabled: yes
+
+# - import_playbook: sync_time.yaml
+# - import_playbook: "/home/punit/etc/ansible_test_bed/{{ import_from_extra_var }}"
+# - name: "First Playbook"
+#   hosts: all
+#   environment:
+#     TERM: xterm
+#   vars:
+#     url: "http://example.com/~user/blog/title/foo-bar-baz"
+#     var_hosts: "{{ lookup('file', '/etc/hosts') }}"
+#     motd_content: "{{ lookup('file', '/etc/motd') }}"
+#     import_from_vars_keyword: /home/punit/etc/ansible_test_bed/imported_from_keyword.yaml
+#   tasks:
+#     - name: "Ping"
+#       ansible.builtin.ping: null
+#     - name: "Print"
+#       ansible.builtin.debug:
+#         msg: "Hello, world!"
+#     - name: "Allow Access From 10.0.0.1"
+#       become: true
+#       ansible.builtin.iptables:
+#         chain: "INPUT"
+#         jump: "ACCEPT"
+#         source: "10.0.0.1"
+#         state: "absent"
+#     - name: "Ensure Line In '.bashrc' Using 'lineinfile'"
+#       ansible.builtin.lineinfile:
+#         path: ".bashrc"
+#         line: "export PS1='\n\\[\e[00;30m\\]#\\[\e[01;32m\\]$pLINENO\\[\e[00;30m\\]|\\[\e[01;34m\\]$?\\[\e[00;30m\\]|\\[\e[01;32m\\]`date +%F`\\[\e[00;30m\\]T\\[\e[01;34m\\]`date +%T`\\[\e[00;30m\\]|\\[\e[01;36m\\]\\u\\[\e[00;30m\\]@\\[\e[01;35m\\]\\h\\[\e[00;30m\\]:\\[\e[01;33m\\]\\w\\[\e[0m\\]\n\\[\e[01;31m\\]\\$\\[\e[0m\\] '"
+#         state: "present"
+#     - name: "Ensure Line In '.bashrc' Using 'copy'."
+#       ansible.builtin.copy:
+#         content: "export PS1='\\n\\[\\e[00;30m\\]#\\[\\e[01;32m\\]$LINENO\\[\\e[00;30m\\]|\\[\\e[01;34m\\]$?\\[\\e[00;30m\\]|\\[\\e[01;32m\\]`date +%F`\\[\\e[00;30m\\]T\\[\\e[01;34m\\]`date +%T`\\[\\e[00;30m\\]|\\[\\e[01;36m\\]\\u\\[\\e[00;30m\\]@\\[\\e[01;35m\\]\\h\\[\\e[00;30m\\]:\\[\\e[01;33m\\]\\w\\[\\e[0m\\]\\n\\[\\e[01;31m\\]\\$\\[\\e[0m\\] '\n"
+#         dest: ".bashrc"
+#
+# # [
+# #     {
+# #         name: "My First Playbook",
+# #         hosts: "all",
+# #         tasks:
+# #             [
+# #                 {name: "Ping", ansible.builtin.ping: null},
+# #                 {name: "Print", ansible.builtin.debug: {msg: "Hello, world!"}},
+# #             ],
+# #     },
+# #     {
+# #         name: "iptables",
+# #         hosts: "all",
+# #         tasks:
+# #             [
+# #                 {
+# #                     name: "Allow Access From 10.0.0.1",
+# #                     become: true,
+# #                     ansible.builtin.iptables:
+# #                         {
+# #                             chain: "INPUT",
+# #                             jump: "ACCEPT",
+# #                             source: "10.0.0.1",
+# #                             state: "absent",
+# #                         },
+# #                 },
+# #             ],
+# #     },
+# #     {
+# #         name: "Ensure Line Is In File",
+# #         hosts: "all",
+# #         tasks:
+# #             [
+# #                 {
+# #                     name: "Line In '.bashrc' Using 'lineinfile'",
+# #                     ansible.builtin.lineinfile:
+# #                         {
+# #                             path: ".bashrc",
+# #                             line: "export PS1='\n\\[\u001b[00;30m\\]#\\[\u001b[01;32m\\]$LINENO\\[\u001b[00;30m\\]|\\[\u001b[01;34m\\]$?\\[\u001b[00;30m\\]|\\[\u001b[01;32m\\]`date +%F`\\[\u001b[00;30m\\]T\\[\u001b[01;34m\\]`date +%T`\\[\u001b[00;30m\\]|\\[\u001b[01;36m\\]\\u\\[\u001b[00;30m\\]@\\[\u001b[01;35m\\]\\h\\[\u001b[00;30m\\]:\\[\u001b[01;33m\\]\\w\\[\u001b[0m\\]\n\\[\u001b[01;31m\\]\\$\\[\u001b[0m\\] '",
+# #                             state: "present",
+# #                         },
+# #                 },
+# #                 {
+# #                     name: "Line In '.bashrc' Using 'copy'",
+# #                     ansible.builtin.copy:
+# #                         {
+# #                             content: "export PS1='\\n\\[\\e[00;30m\\]#\\[\\e[01;32m\\]$LINENO\\[\\e[00;30m\\]|\\[\\e[01;34m\\]$?\\[\\e[00;30m\\]|\\[\\e[01;32m\\]`date +%F`\\[\\e[00;30m\\]T\\[\\e[01;34m\\]`date +%T`\\[\\e[00;30m\\]|\\[\\e[01;36m\\]\\u\\[\\e[00;30m\\]@\\[\\e[01;35m\\]\\h\\[\\e[00;30m\\]:\\[\\e[01;33m\\]\\w\\[\\e[0m\\]\\n\\[\\e[01;31m\\]\\$\\[\\e[0m\\] '\n",
+# #                             dest: ".bashrc",
+# #                         },
+# #                 },
+# #             ],
+# #     },
+# # ]
+#
+# # - name: "Jinja2 Test Bed"
+#       # - name: "Write to hostname"
+#       #   ansible.builtin.template:
+#       #       src: "templates/host_name.j2"
+#       #       dest: "tmp/hostname"
+#       # - name: "Write Template To A Text File"
+#       #   ansible.builtin.template:
+#       #       src: "templates/jinja2_test_bed.j2"
+#       #       dest: "tmp/jinja2.txt"
+#       # - name: "touch Files With An Optional Mode"
+#       #   ansible.builtin.file:
+#       #       path: "{{ item.fileName }}"
+#       #       state: touch
+#       #       mode: "{{ item.mode | default(omit) }}"
+#       #   loop:
+#       #       - fileName: tmp/foo
+#       #       - fileName: tmp/bar
+#       #         mode: "0444"
+#       #       - fileName: tmp/baz
+#       # - name: "Test Test1"
+#       #   ansible.builtin.debug:
+#       #       msg: "Matched pattern 1"
+#       #   when: url is match("http://example.com/~user/blog/.*/foo-bar-baz")
+#       # - name: "Test Test2"
+#       #   ansible.builtin.debug:
+#       #       msg: "Matched pattern 2"
+#       #   when: url is search("user/.*/title/.*")
+#       # - name: "Test Test3"
+#       #   ansible.builtin.debug:
+#       #       msg: "Matched pattern 3"
+#       #   when: url is search("users")
+#       # - name: "Test Test4"
+#       #   ansible.builtin.debug:
+#       #       msg: "matched pattern 4"
+#       #   when: url is regex("example\.com/\w+/foo")
+#       # - name: "Test Tests"
+#       #   block:
+#       #       - name: "Test Test1"
+#       #         ansible.builtin.debug:
+#       #             msg: "Matched pattern 1"
+#       #         when: url is match("http://example.com/~user/blog/.*/foo-bar-baz")
+#       #       - name: "Test Test2"
+#       #         ansible.builtin.debug:
+#       #             msg: "Matched pattern 2"
+#       #         when: url is search("user/.*/title/.*")
+#       #       - name: "Test Test3"
+#       #         ansible.builtin.debug:
+#       #             msg: "Matched pattern 3"
+#       #         when: url is search("users")
+#       #       - name: "Test Test4"
+#       #         ansible.builtin.debug:
+#       #             msg: "matched pattern 4"
+#       #         when: url is regex("example\.com/\w+/foo")
+#       #       - name: "Test Test5"
+#       #         ansible.builtin.debug:
+#       #             msg: "matched pattern 4"
+#       #         when: url is not regex("example\.com/\w+/foo")
+#       # - name: "Test lookup"
+#       #   # become: true
+#       #   block:
+#       #       - name: "/etc/hosts"
+#       #         ansible.builtin.debug:
+#       #             msg: "Value of 'var_hosts' is {{ var_hosts }}"
+#             # - name: "/etc/motd"
+#             #   ansible.builtin.debug:
+#             #       msg: "Value of 'motd_content' is {{ motd_content }}"  # ?
+#       # - name: "lookup and q"
+#       #   block:
+#       #       - name: "lookup"
+#       #         ansible.builtin.debug:
+#       #             msg: "{format yaml{  item }}"
+#       #         loop: "{{ lookup('ns.col.lookup_items', wantlist = True) }}"  # ?
+#       #       - name: "q"
+#       #         ansible.builtin.debug:
+#       #             msg: "{{ item }}"
+#       #         loop: "{{ q('ns.col.lookup_items') }}"  # ?
+#       # - name: "Get Date And Time" # ?
+#       #   ansible.builtin.shell: date > date.out ; cat date.out
+#       #   # changed_when: false
+# - import_playbook: "{{ import_from_vars_keyword }}"

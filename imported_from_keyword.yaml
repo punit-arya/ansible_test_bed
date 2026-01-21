@@ -1,0 +1,5 @@
+---
+- name: touch File
+  tasks:
+      - name: touch File
+        cmd: touch tmp/touched_by_ansible.txt
