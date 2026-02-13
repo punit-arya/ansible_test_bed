@@ -1,9 +1,68 @@
 - name: Grand Old Test-Bed
-  hosts: rhel10
+  hosts: all
   become: true
+  gather_facts: true
+  # vars:
+  #   myuser: anna
   vars_files:
-    vars.yml
+  #   - variables.yaml
+    # - sensitive.txt
+    # - alreadyexists.txt
   tasks:
+    # - name: "Enforce SELinux"
+    #   ansible.posix.selinux:
+    #     policy: targeted
+    #     state: enforcing
+    # - name: Creating user {{ myuser }}
+    #   ansible.builtin.user:
+    #     name: "{{ myuser }}"
+    #     shell: /bin/bash
+    #     state: absent
+    #   register: variab
+    # - name: Printing variab
+    #   ansible.builtin.debug:
+    #     msg: Here is the contents of "{{ variab }}"
+    # - name: Getting facts
+    #   ansible.builtin.debug:
+    #     var: ansible_facts["all_ipv4_addresses"]  # {{ not needed cuz it runs in a jinja template already, so it'll lead to double interpolation
+    #     var: ansible_facts["memory_mb"]["swap"]["free"]
+    #     msg: >
+    #       IP of this host is {{ ansible_facts.default_ipv4.address }}
+    # - name: Demo set_fact
+    #   ansible.builtin.set_fact:
+    #     myfirstfact: saturday
+    #     mysecondfact: evening
+    # - name: Demo again.
+    #   ansible.builtin.debug:
+    #     msg: Recording this on {{  myfirstfact }} {{  mysecondfact }}
+    # - name: New task to demo set_fact
+    #   ansible.builtin.debug:
+    #     msg: it is still {{  myfirstfact }} {{  mysecondfact }}
+    # - name: Demo ansible_mounts in ansible_facts
+    #   ansible.builtin.debug:
+    #     msg: Value is {{ ansible_facts["mounts"][29]["block_size"] }}
+    # - name: Demo register
+    #   register: dateval
+    #   ansible.builtin.command:
+    #     cmd: date
+    # - name: Debug
+    #   ansible.builtin.debug:
+    #     # var: dateval.stdout
+    #     var: dateval["stdout"]
+    # - name: Demo vault for new file
+    #   ansible.builtin.debug:
+    #     msg: >
+    #       This is the contents of the new vault file: {{ password }}
+    # - name: Demo vault for existing file
+    #   ansible.builtin.debug:
+    #     msg: >
+    #       This is the contents of the new vault file: {{ password1 }}
+
+    # - name: "Ping"
+    #   ansible.builtin.ping: null
+    # - name: "Print"
+    #   ansible.builtin.debug:
+    #   msg: "Hello, world!"
     # - name: Install EPEL repo.
     #   yum: name=epel-release state=present
 
@@ -17,14 +76,14 @@
     #     name: "https://rpms.remirepo.net/enterprise/remi-release-7.rpm"
     #     state: present
 
-    - name: Check list of running Node.js apps.
-      command: /usr/local/bin/forever list
-      register: forever_list
-      changed_when: false
-
-    - name: Start example Node.js app.
-      command: "/usr/local/bin/forever start {{ node_apps_location }}/app/app.js"
-      when: "forever_list.stdout.find(node_apps_location + '/app/app.js') == -1"
+#     - name: Check list of running Node.js apps.
+#       command: /usr/local/bin/forever list
+#       register: forever_list
+#       changed_when: false
+#
+#     - name: Start example Node.js app.
+#       command: "/usr/local/bin/forever start {{ node_apps_location }}/app/app.js"
+#       when: "forever_list.stdout.find(node_apps_location + '/app/app.js') == -1"
 
     # - name: Ensure firewalld is stopped (since this is for testing).
     #   service: name=firewalld state=stopped
@@ -75,11 +134,6 @@
 #     motd_content: "{{ lookup('file', '/etc/motd') }}"
 #     import_from_vars_keyword: /home/punit/etc/ansible_test_bed/imported_from_keyword.yaml
 #   tasks:
-#     - name: "Ping"
-#       ansible.builtin.ping: null
-#     - name: "Print"
-#       ansible.builtin.debug:
-#         msg: "Hello, world!"
 #     - name: "Allow Access From 10.0.0.1"
 #       become: true
 #       ansible.builtin.iptables:

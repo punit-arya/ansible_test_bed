@@ -9,7 +9,7 @@ centos7:
         centos7servers:
             hosts:
                 centos7server1:
-                    ansible_host: 172.16.65.11
+                    ansible_host: 172.16.65.15
     vars:
         ansible_python_interpreter: /opt/rh/rh-python38/root/bin/python3.8
         # galaxy_api_key: "{{ undef(hint='You must specify your Galaxy API  key') }}"
@@ -17,23 +17,47 @@ centos7:
         status: needs
         enabled: False
 
+rhel9:
+    children:
+        rhel9clients:
+            hosts:
+                rhel9client1:
+                    ansible_host: 172.16.65.30
+        rhel9servers:
+            hosts:
+                rhel9server1:
+                    ansible_host: 172.16.65.35
+                    enabled: False
+                    status: needs
+                rhel9server2:
+                    ansible_host: 172.16.65.36
+                    enabled:
+                rhel9server3:
+                    ansible_host: 172.16.65.37
+                    enabled: None
+    vars:
+        status: needs_restart
+        enabled: True
+        ansible_python_interpreter: /usr/bin/python
+        galaxy_api_key: "APIKEY"
+
 rhel10:
     children:
         rhel10clients:
             hosts:
                 rhel10client1:
-                    ansible_host: 172.16.65.20
+                    ansible_host: 172.16.65.40
         rhel10servers:
             hosts:
                 rhel10server1:
-                    ansible_host: 172.16.65.21
+                    ansible_host: 172.16.65.45
                     enabled: False
                     status: needs
                 rhel10server2:
-                    ansible_host: 172.16.65.22
+                    ansible_host: 172.16.65.46
                     enabled:
                 rhel10server3:
-                    ansible_host: 172.16.65.23
+                    ansible_host: 172.16.65.47
                     enabled: None
     vars:
         status: needs_restart
