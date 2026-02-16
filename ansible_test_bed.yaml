@@ -1,80 +1,246 @@
-- name: Grand Old Test-Bed
-  hosts: all
-  become: true
-  gather_facts: true
-  # vars:
-  #   myuser: anna
-  vars_files:
-  #   - variables.yaml
-    # - sensitive.txt
-    # - alreadyexists.txt
-  tasks:
-    # - name: "Enforce SELinux"
-    #   ansible.posix.selinux:
-    #     policy: targeted
-    #     state: enforcing
-    # - name: Creating user {{ myuser }}
-    #   ansible.builtin.user:
-    #     name: "{{ myuser }}"
-    #     shell: /bin/bash
-    #     state: absent
-    #   register: variab
-    # - name: Printing variab
-    #   ansible.builtin.debug:
-    #     msg: Here is the contents of "{{ variab }}"
-    # - name: Getting facts
-    #   ansible.builtin.debug:
-    #     var: ansible_facts["all_ipv4_addresses"]  # {{ not needed cuz it runs in a jinja template already, so it'll lead to double interpolation
-    #     var: ansible_facts["memory_mb"]["swap"]["free"]
-    #     msg: >
-    #       IP of this host is {{ ansible_facts.default_ipv4.address }}
-    # - name: Demo set_fact
-    #   ansible.builtin.set_fact:
-    #     myfirstfact: saturday
-    #     mysecondfact: evening
-    # - name: Demo again.
-    #   ansible.builtin.debug:
-    #     msg: Recording this on {{  myfirstfact }} {{  mysecondfact }}
-    # - name: New task to demo set_fact
-    #   ansible.builtin.debug:
-    #     msg: it is still {{  myfirstfact }} {{  mysecondfact }}
-    # - name: Demo ansible_mounts in ansible_facts
-    #   ansible.builtin.debug:
-    #     msg: Value is {{ ansible_facts["mounts"][29]["block_size"] }}
-    # - name: Demo register
-    #   register: dateval
-    #   ansible.builtin.command:
-    #     cmd: date
-    # - name: Debug
-    #   ansible.builtin.debug:
-    #     # var: dateval.stdout
-    #     var: dateval["stdout"]
-    # - name: Demo vault for new file
-    #   ansible.builtin.debug:
-    #     msg: >
-    #       This is the contents of the new vault file: {{ password }}
-    # - name: Demo vault for existing file
-    #   ansible.builtin.debug:
-    #     msg: >
-    #       This is the contents of the new vault file: {{ password1 }}
+# - name: Grand Old Test-Bed
+#   hosts: all
+#   become: true
+#   gather_facts: false
+# vars:
+#   myuser: anna
+# vars_files:
+# - variables.yaml
+# - sensitive.anva
+# - alreadyexists.anva
+# - loop_items.yaml
+# - variables1.yaml
+# tasks:
+# - name: "Enforce SELinux"
+#   ansible.posix.selinux:
+#     policy: targeted
+#     state: enforcing
+# - name: Creating user {{ myuser }}
+#   ansible.builtin.user:
+#     name: "{{ myuser }}"
+#     shell: /bin/bash
+#     state: absent
+#   register: variab
+# - name: Printing variab
+#   ansible.builtin.debug:
+#     msg: Here is the contents of "{{ variab }}"
+# - name: Getting facts
+#   ansible.builtin.debug:
+#     var: ansible_facts["all_ipv4_addresses"]  # {{ not needed cuz it runs in a jinja template already, so it'll lead to double interpolation
+#     var: ansible_facts["memory_mb"]["swap"]["free"]
+#     msg: >
+#       IP of this host is {{ ansible_facts.default_ipv4.address }}
+# - name: Demo set_fact
+#   ansible.builtin.set_fact:
+#     myfirstfact: saturday
+#     mysecondfact: evening
+# - name: Demo again.
+#   ansible.builtin.debug:
+#     msg: Recording this on {{  myfirstfact }} {{  mysecondfact }}
+# - name: New task to demo set_fact
+#   ansible.builtin.debug:
+#     msg: it is still {{  myfirstfact }} {{  mysecondfact }}
+# - name: Demo ansible_mounts in ansible_facts
+#   ansible.builtin.debug:
+#     msg: Value is {{ ansible_facts["mounts"][29]["block_size"] }}
+# - name: Demo register
+#   register: dateval
+#   ansible.builtin.command:
+#     cmd: date
+# - name: Debug
+#   ansible.builtin.debug:
+#     # var: dateval.stdout
+#     var: dateval["stdout"]
+# - name: Demo vault for new file
+#   ansible.builtin.debug:
+#     msg: >
+#       This is the contents of the new vault file: {{ password }}
+# - name: Demo vault for existing file
+#   ansible.builtin.debug:
+#     msg: >
+#       This is the contents of the new vault file: {{ password1 }}
 
-    # - name: "Ping"
-    #   ansible.builtin.ping: null
-    # - name: "Print"
-    #   ansible.builtin.debug:
-    #   msg: "Hello, world!"
-    # - name: Install EPEL repo.
-    #   yum: name=epel-release state=present
+# - name: Demo loop
+#   ansible.builtin.debug:
+#     msg: "{{ item }}"
+#   loop:
+#     - vsftpd
+#     - httpd
+#     - sshd
 
-    # - name: Import Remi GPG key.
-    #   rpm_key:
-    #     key: "https://rpms.remirepo.net/RPM-GPG-KEY-remi"
-    #     state: present
+# - name: Looping over a variable
+#   ansible.builtin.debug:
+#     msg: The loop item is {{ item }}
+#   loop: "{{ loopingstuff }}"
 
-    # - name: Install Remi repo.
-    #   yum:
-    #     name: "https://rpms.remirepo.net/enterprise/remi-release-7.rpm"
-    #     state: present
+# - name: Demo hashed loop items
+#   ansible.builtin.debug:
+#     msg: User name is {{ item.uname }} and group is {{ item.ugroups }}
+#   loop: "{{ myusers }}"
+
+# - name: Demo handlers, force_handlers
+#   hosts: rhel9clients
+#   force_handlers: true
+#   tasks:
+#     - name: Copy file
+#       ansible.builtin.copy:
+#         src: /tmp/index.html
+#         dest: /var/www/html/index.html
+#         mode: "0644"
+#       # notify:
+#       #   - Restart Web
+#     - name: Install httpd
+#       ansible.builtin.dnf:
+#         name: httpd
+#         state: present
+#     - name: Copy non-existing file
+#       ansible.builtin.copy:
+#         src: /tmp/doesnotexist12
+#         dest: /var/www/html/doesnotexist.html
+#         mode: "0644"
+#       notify:
+#         - Restart Web
+#   handlers:
+#     - name: Restart Web
+#       ansible.builtin.debug:
+#         msg: The handler has run
+
+# - name: Demo flush_handlers
+#   hosts: centos7clients
+#   gather_facts: false
+#   tasks:
+#     - name: Copy uevent file
+#       ansible.builtin.copy:
+#         src: /tmp/uevent
+#         dest: /tmp/
+#         mode: "0644"
+#       notify:
+#         - Copy handler
+#     - name: Flush handlers
+#       ansible.builtin.meta: flush_handlers
+#     - name: Copy another file
+#       ansible.builtin.copy:
+#         src: /tmp/index.html1
+#         dest: /tmp/
+#         mode: "0644"
+#   handlers:
+#     - name: Copy handler
+#       ansible.builtin.debug:
+#         msg: The handler has run
+
+# - name: Demo when
+#   gather_facts: true
+#   hosts: all
+#   vars:
+#     vmfilter:
+#       - client1-vm-rhel9
+#       - server1-vm-rhel10
+#   tasks:
+#     - name: VM-specific installation
+#       ansible.builtin.debug:
+#         # msg: This_word_is_needed {{ ansible_facts.hostname }} is in {{ vmfilter }}
+#         msg: available size is greater than 10 GB
+#       loop: "{{ ansible_facts['mounts'] }}"
+#       when:
+#         # ansible_hostname in vmfilter and "14" in ansible_date_time["day"]
+#         # - ansible_hostname in vmfilter
+#         # # - "13" in ansible_date_time["day"]
+#         # - ansible_memfree_mb > 512
+#         - item["size_available"] < 10485760000 and item["mount"] == "/"
+
+# - name: Demo vars_prompt
+#   hosts: localhost
+#   gather_facts: false
+#   vars_prompt:
+#     name: user_name
+#     prompt: which user are you looking for ?
+#     private: false
+#   tasks:
+#     - name: Checking whether we found {{ user_name }}
+#       ansible.builtin.command: cat /etc/passwd
+#       register: passwd_contents
+#     - name: Printing {{ user_name }}
+#       ansible.builtin.debug:
+#         var: passwd_contents
+#     - name: Printing the passwd file
+#       ansible.builtin.debug:
+#         msg: echo passwd contains user {{ user_name }}
+#       when: passwd_contents["stdout"].find(user_name) != -1
+
+# - name: Demo block with rescue and always keywords
+#   hosts: remote
+#   tasks:
+#     - name: Will be "success"
+#       when: ansible_distribution == "RedHat"
+#       block:
+#         - name: Creating a file
+#           ansible.builtin.command:
+#             cmd: touch /var/www/html/index.html
+#           changed_when: false
+#         - name: Restart rsyslog
+#           ansible.builtin.service:
+#             name: rsyslog
+#             state: started
+#       rescue:
+#         - name: Date
+#           ansible.builtin.shell: date
+#         - name: Create a file
+#           ansible.builtin.shell:
+#             cmd: touch /tmp/rescue_completed
+#       always:
+#         - name: Log a message
+#           ansible.builtin.shell: logger hello
+
+# - name: Demo ignore_errors
+#   hosts: rhel9clients
+#   gather_facts: false
+#   ignore_errors: true
+#   tasks:
+#     - name: Copy file
+#       ansible.builtin.copy:
+#         src: /tmp/uevent1
+#         dest: /tmp
+#         mode: "0600"
+#     - name: Copy another file
+#       ansible.builtin.copy:
+#         src: /tmp/uevent
+#         dest: /tmp
+#         mode: "0600"
+
+# - name: Demo ignore_errors and force_handlers combo
+#   hosts: rhel9clients
+#   gather_facts: false
+#   ignore_errors: true
+#   force_handlers: false
+#   tasks:
+#     - name: Copy file
+#       ansible.builtin.copy:
+#         src: /tmp/uevent
+#         dest: /tmp/
+#       notify:
+#         force handler and ignore error demo
+#   handlers:
+#     - name: force handler and ignore error demo
+#       ansible.builtin.debug:
+#         msg: The handler has run
+
+# - name: "Ping"
+#   ansible.builtin.ping: null
+# - name: "Print"
+#   ansible.builtin.debug:
+#   msg: "Hello, world!"
+# - name: Install EPEL repo.
+#   yum: name=epel-release state=present
+
+# - name: Import Remi GPG key.
+#   rpm_key:
+#     key: "https://rpms.remirepo.net/RPM-GPG-KEY-remi"
+#     state: present
+
+# - name: Install Remi repo.
+#   yum:
+#     name: "https://rpms.remirepo.net/enterprise/remi-release-7.rpm"
+#     state: present
 
 #     - name: Check list of running Node.js apps.
 #       command: /usr/local/bin/forever list
@@ -85,42 +251,42 @@
 #       command: "/usr/local/bin/forever start {{ node_apps_location }}/app/app.js"
 #       when: "forever_list.stdout.find(node_apps_location + '/app/app.js') == -1"
 
-    # - name: Ensure firewalld is stopped (since this is for testing).
-    #   service: name=firewalld state=stopped
-    # - name: Install Node.js and npm.
-    #   yum: name=npm state=present enablerepo=epel
-    # - name: Install Forever (to run our Node.js app).
-    #   npm: name=forever global=yes state=present
-    # - name: Ensure Node.js app folder exists.
-    #   file: "path={{ node_apps_location }} state=directory"
-    # - name: Copy example Node.js app to server.
-    #   copy: "src=app dest={{ node_apps_location }}"
-    # - name: Install app dependencies defined in package.json.
-    #   npm: path={{ node_apps_location }}/app
+# - name: Ensure firewalld is stopped (since this is for testing).
+#   service: name=firewalld state=stopped
+# - name: Install Node.js and npm.
+#   yum: name=npm state=present enablerepo=epel
+# - name: Install Forever (to run our Node.js app).
+#   npm: name=forever global=yes state=present
+# - name: Ensure Node.js app folder exists.
+#   file: "path={{ node_apps_location }} state=directory"
+# - name: Copy example Node.js app to server.
+#   copy: "src=app dest={{ node_apps_location }}"
+# - name: Install app dependencies defined in package.json.
+#   npm: path={{ node_apps_location }}/app
 
-    # - name: Install Apache.
-    #   yum:
-    #     name:
-    #       - httpd
-    #       - httpd-devel
-    #     state: present
-    # - name: Copy configuration files.
-    #   copy:
-    #     src: "{{ item.src }}"
-    #     dest: "{{ item.dest }}"
-    #     owner: root
-    #     group: root
-    #     mode: 644
-    #   with_items:
-    #     - src: httpd.conf
-    #       dest: /etc/httpd/conf/httpd.conf
-    #     - src: httpd-vhosts.conf
-    #       dest: /etc/httpd/conf/httpd-vhosts.conf
-    # - name: Make sure Apache is started now and at boot.
-    #   service:
-    #     name: httpd
-    #     state: started
-    #     enabled: yes
+# - name: Install Apache.
+#   yum:
+#     name:
+#       - httpd
+#       - httpd-devel
+#     state: present
+# - name: Copy configuration files.
+#   copy:
+#     src: "{{ item.src }}"
+#     dest: "{{ item.dest }}"
+#     owner: root
+#     group: root
+#     mode: 644
+#   with_items:
+#     - src: httpd.conf
+#       dest: /etc/httpd/conf/httpd.conf
+#     - src: httpd-vhosts.conf
+#       dest: /etc/httpd/conf/httpd-vhosts.conf
+# - name: Make sure Apache is started now and at boot.
+#   service:
+#     name: httpd
+#     state: started
+#     enabled: yes
 
 # - import_playbook: sync_time.yaml
 # - import_playbook: "/home/punit/etc/ansible_test_bed/{{ import_from_extra_var }}"
