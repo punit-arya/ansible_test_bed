@@ -144,7 +144,7 @@
 #       when:
 #         # ansible_hostname in vmfilter and "14" in ansible_date_time["day"]
 #         # - ansible_hostname in vmfilter
-#         # # - "13" in ansible_date_time["day"]
+#         #  # - "13" in ansible_date_time["day"]
 #         # - ansible_memfree_mb > 512
 #         - item["size_available"] < 10485760000 and item["mount"] == "/"
 
@@ -214,15 +214,55 @@
 #   force_handlers: false
 #   tasks:
 #     - name: Copy file
-#       ansible.builtin.copy:
-#         src: /tmp/uevent
-#         dest: /tmp/
-#       notify:
-#         force handler and ignore error demo
+#       ansible.builtin.shell:
+#         cmd: "lsss /tmp"
+#         # src: /tmp/uevent12
+#         # dest: /tmp/
+#         # mode: "0600"
+#     - name: Another
+#       ansible.builtin.shell:
+#         cmd: "echosss"
+#       # - name: Debug
+#       #   ansible.builtin.debug:
+#       #     msg: Yellow
+#       notify: Demogorgon
 #   handlers:
-#     - name: force handler and ignore error demo
+#     - name: Demogorgon  # Runs if debug is commented, because it becomes the handler of the last task, because the shell task is not idempotent, and only if the shell task doesn't fail
 #       ansible.builtin.debug:
 #         msg: The handler has run
+
+# - name: Illustrate failed_when
+#   hosts: centos7clients
+#   gather_facts: false
+#   tasks:
+#     - name: Failing command
+#       ansible.builtin.command:
+#         cmd: "echo hello world"
+#       ignore_errors: true # Can be at task level too.
+#       register: retval
+#       failed_when: "'world' in retval.stdout"
+#     - name: Next # Task will be run even if previous task failed
+#       ansible.builtin.debug:
+#         msg: The task has run despite error in previous task
+#     # - name: Should fail
+#     #   ansible.builtin.command:
+#     #     cmd: "echooooo"
+
+- name: Exemplify fail module
+  hosts: centos7clients
+  gather_facts: false
+  ignore_errors: true
+  tasks:
+    - name: Running echo
+      ansible.builtin.command: "echo Hello, world!"
+      register: retval
+    - name: The module of the task
+      ansible.builtin.fail:
+        msg: fail module fail
+      when: "'world' in retval.stdout"
+    - name: Running debug
+      ansible.builtin.debug:
+        msg: This is the msg in debug
 
 # - name: "Ping"
 #   ansible.builtin.ping: null
@@ -286,7 +326,7 @@
 #   service:
 #     name: httpd
 #     state: started
-#     enabled: yes
+#     enabled: true
 
 # - import_playbook: sync_time.yaml
 # - import_playbook: "/home/punit/etc/ansible_test_bed/{{ import_from_extra_var }}"
@@ -429,7 +469,7 @@
 #       #             msg: "matched pattern 4"
 #       #         when: url is not regex("example\.com/\w+/foo")
 #       # - name: "Test lookup"
-#       #   # become: true
+#       #  # become: true
 #       #   block:
 #       #       - name: "/etc/hosts"
 #       #         ansible.builtin.debug:
@@ -447,7 +487,7 @@
 #       #         ansible.builtin.debug:
 #       #             msg: "{{ item }}"
 #       #         loop: "{{ q('ns.col.lookup_items') }}"  # ?
-#       # - name: "Get Date And Time" # ?
+#       # - name: "Get Date And Time"  # ?
 #       #   ansible.builtin.shell: date > date.out ; cat date.out
-#       #   # changed_when: false
+#       #  # changed_when: false
 # - import_playbook: "{{ import_from_vars_keyword }}"
