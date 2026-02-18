@@ -276,24 +276,53 @@
 #       ansible.builtin.assert:
 #         that: statreg.stat.isdir
 
-- name: Another example
+# - name: Another example
+#   hosts: rhel9clients
+#   gather_facts: false
+#   vars_prompt:
+#     - name: file_size
+#       prompt: Wot's the file size in MiB ?
+#       private: false
+#   tasks:
+#     - name: Is the file size within the window ?
+#       ansible.builtin.assert:
+#         that:
+#           - (file_size | int) >= 1
+#           - (file_size | int) <= 10
+#         fail_msg: file size IS NOT between 1 and 10, aborting
+#         success_msg: file size IS between 1 and 10, continuing
+#     - name: Create file
+#       ansible.builtin.command: dd if=/dev/random of=random_file bs=1 count={{ file_size }}
+
+# - name: Non-idempotent command module
+#   hosts: rhel9clients
+#   gather_facts: false
+#   become: true
+#   tasks:
+#     - name: The command
+#       ansible.builtin.command: useradd joan
+#       register: addeduser
+#     - name: Run debug
+#       ansible.builtin.debug:
+#         msg: I do not get printed in the second-time execution cuz I'm not idempotent
+
+- name: Idempotent command module
   hosts: rhel9clients
-  gather_facts: false
-  vars_prompt:
-    - name: file_size
-      prompt: Wot's the file size in MiB ?
-      private: false
+  gather_facts: true
+  become: true
+  ignore_errors: true
   tasks:
-    - name: Is the file size within the window ?
+    - name: The command
+      ansible.builtin.command: useradd joan
+      register: addeduser
+    - name: Exit code 9 is OK
       ansible.builtin.assert:
         that:
-          - (file_size | int) >= 1
-          - (file_size | int) <= 10
-        fail_msg: file size IS NOT between 1 and 10, aborting
-        success_msg: file size IS between 1 and 10, continuing
-    - name: Create file
-      ansible.builtin.command: dd if=/dev/random of=random_file bs=1 count={{ file_size }}
-
+          - addeduser.rc == 9
+        success_msg: User already exists and that's OK cuz we're idempotent now
+    - name: Running debug
+      ansible.builtin.debug:
+        msg: Debug has run
 
 # - name: "Ping"
 #   ansible.builtin.ping: null
