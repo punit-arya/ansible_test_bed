@@ -306,23 +306,69 @@
 #       ansible.builtin.debug:
 #         msg: I do not get printed in the second-time execution cuz I'm not idempotent
 
-- name: Idempotent command module
+# - name: Idempotent command module
+#   hosts: rhel9clients
+#   gather_facts: true
+#   become: true
+#   ignore_errors: true
+#   tasks:
+#     - name: The command
+#       ansible.builtin.command: useradd joan
+#       register: addeduser
+#     - name: Exit code 9 is OK
+#       ansible.builtin.assert:
+#         that:
+#           - addeduser.rc == 9
+#         success_msg: User already exists and that's OK cuz we're idempotent now
+#     - name: Running debug
+#       ansible.builtin.debug:
+#         msg: Debug has run
+
+# - name: Illustrate blockinfile and stat(checksum_algorithm)
+#   hosts: rhel9
+#   gather_facts: false
+#   tasks:
+#     - name: Add lines to a file
+#       blockinfile:
+#         path: /etc/hosts
+#         block: |
+#           192.168.1.20 host1
+#           192.168.1.21 host2
+#         state: absent
+#     - name: Verify check-sum
+#       ansible.builtin.stat:
+#         path: /etc/hosts
+#         checksum_algorithm: sha256
+#       register: retval
+#     - name: Debug
+#       ansible.builtin.debug:
+#         msg: The checksum is {{ retval['stat']['checksum'] }}
+#         # var: retval
+
+- name: Demo custom facts on client
   hosts: rhel9clients
-  gather_facts: true
-  become: true
-  ignore_errors: true
+  gather_facts: false
   tasks:
-    - name: The command
-      ansible.builtin.command: useradd joan
-      register: addeduser
-    - name: Exit code 9 is OK
-      ansible.builtin.assert:
-        that:
-          - addeduser.rc == 9
-        success_msg: User already exists and that's OK cuz we're idempotent now
-    - name: Running debug
-      ansible.builtin.debug:
-        msg: Debug has run
+    - name: Populating the facts file
+      ansible.builtin.blockinfile:
+        path: /etc/ansible/facts.d/local.fact
+        create: true
+        mode: "0664"
+        block: |
+          [localfacts]
+          type: client
+- name: Demo custom fact on servers
+  hosts: rhel9servers
+  gather_facts: false
+  tasks:
+    - name: Populating the facts file
+      ansible.builtin.blockinfile:
+        path: /etc/ansible/facts.d/local.fact
+        create: true
+        mode: "0664"
+        block: |
+          [localfacts]
+          type: server
 
 # - name: "Ping"
 #   ansible.builtin.ping: null
