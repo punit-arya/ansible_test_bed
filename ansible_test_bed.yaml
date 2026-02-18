@@ -248,21 +248,52 @@
 #     #   ansible.builtin.command:
 #     #     cmd: "echooooo"
 
-- name: Exemplify fail module
-  hosts: centos7clients
+# - name: Exemplify fail module
+#   hosts: centos7clients
+#   gather_facts: false
+#   ignore_errors: true
+#   tasks:
+#     - name: Running echo
+#       ansible.builtin.command: "echo Hello, world!"
+#       register: retval
+#     - name: The module of the task
+#       ansible.builtin.fail:
+#         msg: fail module fail
+#       when: "'world' in retval.stdout"
+#     - name: Running debug
+#       ansible.builtin.debug:
+#         msg: This is the msg in debug
+
+# - name: Exemplify stat and assert
+#   hosts: rhel9clients
+#   gather_facts: false
+#   tasks:
+#     - name: Running stat
+#       ansible.builtin.stat:
+#         path: /etc/hosts
+#       register: statreg
+#     - name: Assert that /etc/hosts is a directory
+#       ansible.builtin.assert:
+#         that: statreg.stat.isdir
+
+- name: Another example
+  hosts: rhel9clients
   gather_facts: false
-  ignore_errors: true
+  vars_prompt:
+    - name: file_size
+      prompt: Wot's the file size in MiB ?
+      private: false
   tasks:
-    - name: Running echo
-      ansible.builtin.command: "echo Hello, world!"
-      register: retval
-    - name: The module of the task
-      ansible.builtin.fail:
-        msg: fail module fail
-      when: "'world' in retval.stdout"
-    - name: Running debug
-      ansible.builtin.debug:
-        msg: This is the msg in debug
+    - name: Is the file size within the window ?
+      ansible.builtin.assert:
+        that:
+          - (file_size | int) >= 1
+          - (file_size | int) <= 10
+        fail_msg: file size IS NOT between 1 and 10, aborting
+        success_msg: file size IS between 1 and 10, continuing
+    - name: Create file
+      ansible.builtin.command: dd if=/dev/random of=random_file bs=1 count={{ file_size }}
+
 
 # - name: "Ping"
 #   ansible.builtin.ping: null
