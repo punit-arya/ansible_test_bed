@@ -345,30 +345,57 @@
 #         msg: The checksum is {{ retval['stat']['checksum'] }}
 #         # var: retval
 
-- name: Demo custom facts on client
+# - name: Demo custom facts on client
+#   hosts: rhel9clients
+#   gather_facts: false
+#   tasks:
+#     - name: Populating the facts file
+#       ansible.builtin.blockinfile:
+#         path: /etc/ansible/facts.d/local.fact
+#         create: true
+#         mode: "0664"
+#         block: |
+#           [localfacts]
+#           type: client
+# - name: Demo custom fact on servers
+#   hosts: rhel9servers
+#   gather_facts: false
+#   tasks:
+#     - name: Populating the facts file
+#       ansible.builtin.blockinfile:
+#         path: /etc/ansible/facts.d/local.fact
+#         create: true
+#         mode: "0664"
+#         block: |
+#           [localfacts]
+#           type: server
+
+- name: Elucidate find module
   hosts: rhel9clients
   gather_facts: false
+  become: false
   tasks:
-    - name: Populating the facts file
+    - name: Find ansible.cfg
+      ansible.builtin.find:
+        paths: /home/punit/rhce8-live
+        patterns: "*.txt"
+        recurse: true
+      register: output
+    - name: Running debug
+      ansible.builtin.debug:
+        var: item.path
+      with_items: "{{ output.files }}"
+    - name: Running blockinfile
       ansible.builtin.blockinfile:
-        path: /etc/ansible/facts.d/local.fact
-        create: true
-        mode: "0664"
+        path: "{{ item.path }}"
+        insertafter: "defaults"
+        marker: "##<!-- {mark} ANSIBLE-MANAGED BLOCK -->##"
         block: |
-          [localfacts]
-          type: client
-- name: Demo custom fact on servers
-  hosts: rhel9servers
-  gather_facts: false
-  tasks:
-    - name: Populating the facts file
-      ansible.builtin.blockinfile:
-        path: /etc/ansible/facts.d/local.fact
-        create: true
-        mode: "0664"
-        block: |
-          [localfacts]
-          type: server
+          fact_caching = redis
+          fact_caching_timeout = 3600
+          fact_caching_connection = localhost:6379:0
+        state: absent
+      with_items: "{{ output.files }}"
 
 # - name: "Ping"
 #   ansible.builtin.ping: null
