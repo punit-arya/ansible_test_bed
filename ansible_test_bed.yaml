@@ -370,32 +370,51 @@
 #           [localfacts]
 #           type: server
 
-- name: Elucidate find module
-  hosts: rhel9clients
-  gather_facts: false
-  become: false
+# - name: Elucidate find module
+#   hosts: rhel9clients
+#   gather_facts: false
+#   become: false
+#   tasks:
+#     - name: Find ansible.cfg
+#       ansible.builtin.find:
+#         paths: /home/punit/rhce8-live
+#         patterns: "*.txt"
+#         recurse: true
+#       register: output
+#     - name: Running debug
+#       ansible.builtin.debug:
+#         var: item.path
+#       with_items: "{{ output.files }}"
+#     - name: Running blockinfile
+#       ansible.builtin.blockinfile:
+#         path: "{{ item.path }}"
+#         insertafter: "defaults"
+#         marker: "##<!-- {mark} ANSIBLE-MANAGED BLOCK -->##"
+#         block: |
+#           fact_caching = redis
+#           fact_caching_timeout = 3600
+#           fact_caching_connection = localhost:6379:0
+#         state: absent
+#       with_items: "{{ output.files }}"
+
+- name: Illustrate templates
+  hosts: rhel9server1
+  gather_facts: true
+  become: true
+  vars:
+    anonymous_enable: true
+    local_enable: true
+    write_enable: true
+    anon_upload_enable: true
   tasks:
-    - name: Find ansible.cfg
-      ansible.builtin.find:
-        paths: /home/punit/rhce8-live
-        patterns: "*.txt"
-        recurse: true
-      register: output
-    - name: Running debug
-      ansible.builtin.debug:
-        var: item.path
-      with_items: "{{ output.files }}"
-    - name: Running blockinfile
-      ansible.builtin.blockinfile:
-        path: "{{ item.path }}"
-        insertafter: "defaults"
-        marker: "##<!-- {mark} ANSIBLE-MANAGED BLOCK -->##"
-        block: |
-          fact_caching = redis
-          fact_caching_timeout = 3600
-          fact_caching_connection = localhost:6379:0
-        state: absent
-      with_items: "{{ output.files }}"
+    - name: Install vsftpd
+      ansible.builtin.dnf:
+        name: vsftpd
+    - name: Transfer the template
+      ansible.builtin.template:
+        src: vsftpd.j2
+        dest: /etc/vsftpd/vsftpd.conf
+        mode: "0644"
 
 # - name: "Ping"
 #   ansible.builtin.ping: null
