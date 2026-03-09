@@ -397,23 +397,34 @@
 #         state: absent
 #       with_items: "{{ output.files }}"
 
-- name: Illustrate templates
-  hosts: rhel9server1
+# - name: Illustrate templates
+#   hosts: rhel9server1
+#   gather_facts: true
+#   become: true
+#   vars:
+#     anonymous_enable: true
+#     local_enable: true
+#     write_enable: true
+#     anon_upload_enable: true
+#   tasks:
+#     - name: Install vsftpd
+#       ansible.builtin.dnf:
+#         name: vsftpd
+#     - name: Transfer the template
+#       ansible.builtin.template:
+#         src: vsftpd.j2
+#         dest: /etc/vsftpd/vsftpd.conf
+#         mode: "0644"
+
+- name: Exemplify templates
+  hosts: remote
   gather_facts: true
-  become: true
-  vars:
-    anonymous_enable: true
-    local_enable: true
-    write_enable: true
-    anon_upload_enable: true
+  become: false
   tasks:
-    - name: Install vsftpd
-      ansible.builtin.dnf:
-        name: vsftpd
-    - name: Transfer the template
+    - name: Using templates
       ansible.builtin.template:
-        src: vsftpd.j2
-        dest: /etc/vsftpd/vsftpd.conf
+        src: hosts.j2
+        dest: /tmp/hosts
         mode: "0644"
 
 # - name: "Ping"
