@@ -416,16 +416,27 @@
 #         dest: /etc/vsftpd/vsftpd.conf
 #         mode: "0644"
 
-- name: Exemplify templates
-  hosts: remote
+# - name: Exemplify templates
+#   hosts: remote
+#   gather_facts: true
+#   become: false
+#   tasks:
+#     - name: Using templates
+#       ansible.builtin.template:
+#         src: hosts.j2
+#         dest: /tmp/hosts
+#         mode: "0644"
+
+- name: Show roles
+  hosts: rhel9server1
   gather_facts: true
-  become: false
-  tasks:
-    - name: Using templates
-      ansible.builtin.template:
-        src: hosts.j2
-        dest: /tmp/hosts
-        mode: "0644"
+  become: true
+  pre_tasks:
+    - ansible.builtin.package:
+        name: httpd
+        state: absent
+  roles:
+    - role: geerlingguy.nginx
 
 # - name: "Ping"
 #   ansible.builtin.ping: null
