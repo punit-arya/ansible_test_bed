@@ -438,17 +438,44 @@
 #   roles:
 #     - role: geerlingguy.nginx
 
-- name: Regurgitate lineinfile with validate and regexp
-  hosts: rhel9clients
+# - name: Regurgitate lineinfile with validate and regexp
+#   hosts: rhel9clients
+#   gather_facts: false
+#   become: true
+#   tasks:
+#     - name: Running blockinfile
+#       ansible.builtin.lineinfile:
+#         path: /etc/sudoers
+#         # regexp: "^Defaults"
+#         line: "Defaults timestamp_type=global,timestamp_timeout=240"
+#         validate: visudo -cf %s
+
+- name: Exemplify tags, play one
+  hosts: localhost
   gather_facts: false
-  become: true
+  become: false
   tasks:
-    - name: Running blockinfile
-      ansible.builtin.lineinfile:
-        path: /etc/sudoers
-        # regexp: "^Defaults"
-        line: "Defaults timestamp_type=global,timestamp_timeout=240"
-        validate: visudo -cf %s
+    - name: Running debug
+      ansible.builtin.debug:
+        msg: Task 1
+    - name: Running debug
+      ansible.builtin.debug:
+        msg: Task 2
+  tags: tag1
+
+- name: Exemplify tags, play two
+  hosts: localhost
+  gather_facts: false
+  become: false
+  tasks:
+    - name: Running debug
+      ansible.builtin.debug:
+        msg: Task 3
+    - name: Running debug
+      ansible.builtin.debug:
+        msg: Task 4
+  tags: tag2
+
 
 # - name: "Ping"
 #   ansible.builtin.ping: null
