@@ -427,16 +427,28 @@
 #         dest: /tmp/hosts
 #         mode: "0644"
 
-- name: Show roles
-  hosts: rhel9server1
-  gather_facts: true
+# - name: Show roles
+#   hosts: rhel9server1
+#   gather_facts: true
+#   become: true
+#   pre_tasks:
+#     - ansible.builtin.package:
+#         name: httpd
+#         state: absent
+#   roles:
+#     - role: geerlingguy.nginx
+
+- name: Regurgitate lineinfile with validate and regexp
+  hosts: rhel9clients
+  gather_facts: false
   become: true
-  pre_tasks:
-    - ansible.builtin.package:
-        name: httpd
-        state: absent
-  roles:
-    - role: geerlingguy.nginx
+  tasks:
+    - name: Running blockinfile
+      ansible.builtin.lineinfile:
+        path: /etc/sudoers
+        # regexp: "^Defaults"
+        line: "Defaults timestamp_type=global,timestamp_timeout=240"
+        validate: visudo -cf %s
 
 # - name: "Ping"
 #   ansible.builtin.ping: null
