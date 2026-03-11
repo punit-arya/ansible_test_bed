@@ -450,31 +450,69 @@
 #         line: "Defaults timestamp_type=global,timestamp_timeout=240"
 #         validate: visudo -cf %s
 
-- name: Exemplify tags, play one
-  hosts: localhost
-  gather_facts: false
-  become: false
-  tasks:
-    - name: Running debug
-      ansible.builtin.debug:
-        msg: Task 1
-    - name: Running debug
-      ansible.builtin.debug:
-        msg: Task 2
-  tags: tag1
+# - name: Exemplify tags, play one
+#   hosts: localhost
+#   gather_facts: false
+#   become: false
+#   tasks:
+#     - name: Running debug
+#       ansible.builtin.debug:
+#         msg: Task 1
+#     - name: Running debug
+#       ansible.builtin.debug:
+#         msg: Task 2
+#   tags: tag1
+#
+# - name: Exemplify tags, play two
+#   hosts: localhost
+#   gather_facts: false
+#   become: false
+#   tasks:
+#     - name: Running debug
+#       ansible.builtin.debug:
+#         msg: Task 3
+#     - name: Running debug
+#       ansible.builtin.debug:
+#         msg: Task 4
+#   tags: tag2
 
-- name: Exemplify tags, play two
-  hosts: localhost
-  gather_facts: false
-  become: false
-  tasks:
-    - name: Running debug
-      ansible.builtin.debug:
-        msg: Task 3
-    - name: Running debug
-      ansible.builtin.debug:
-        msg: Task 4
-  tags: tag2
+# - name: Show delegate_to
+#   hosts: clients-vm-rhel9
+#   gather_facts: false
+#   become: true
+#   tasks:
+#     - name: Copy file from localhost to server1-vm-rhel9
+#       ansible.builtin.copy:
+#         src: /etc/hosts
+#         dest: /tmp/hosts
+#         mode: "0644"
+#       delegate_to: server1-vm-rhel9
+#     - name: Verify
+#       ansible.builtin.stat:
+#         path: /tmp/hosts
+#       register: stat_output
+#     - name: Print registered variable
+#       ansible.builtin.debug:
+#         var: stat_output
+#
+# - name: See delegate_to again
+#   hosts: server1-vm-rhel9
+#   gather_facts: false
+#   become: true
+#   tasks:
+#     - name: Use package
+#       ansible.builtin.package:
+#         name: httpd
+#         state: present
+#     - name: Use service
+#       ansible.builtin.service:
+#         name: httpd
+#         state: started
+#         enabled: true
+#     - name: Use uri
+#       ansible.builtin.uri:
+#         url: http://server1-vm-rhel9
+#       delegate_to: localhost
 
 
 # - name: "Ping"
