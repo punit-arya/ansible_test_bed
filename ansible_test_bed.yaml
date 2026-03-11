@@ -79,7 +79,7 @@
 #   loop: "{{ myusers }}"
 
 # - name: Demo handlers, force_handlers
-#   hosts: rhel9clients
+#   hosts: clients-vm-rhel9
 #   force_handlers: true
 #   tasks:
 #     - name: Copy file
@@ -106,7 +106,7 @@
 #         msg: The handler has run
 
 # - name: Demo flush_handlers
-#   hosts: centos7clients
+#   hosts: clients-vm-centos7
 #   gather_facts: false
 #   tasks:
 #     - name: Copy uevent file
@@ -192,7 +192,7 @@
 #           ansible.builtin.shell: logger hello
 
 # - name: Demo ignore_errors
-#   hosts: rhel9clients
+#   hosts: clients-vm-rhel9
 #   gather_facts: false
 #   ignore_errors: true
 #   tasks:
@@ -208,7 +208,7 @@
 #         mode: "0600"
 
 # - name: Demo ignore_errors and force_handlers combo
-#   hosts: rhel9clients
+#   hosts: clients-vm-rhel9
 #   gather_facts: false
 #   ignore_errors: true
 #   force_handlers: false
@@ -232,7 +232,7 @@
 #         msg: The handler has run
 
 # - name: Illustrate failed_when
-#   hosts: centos7clients
+#   hosts: clients-vm-centos7
 #   gather_facts: false
 #   tasks:
 #     - name: Failing command
@@ -249,7 +249,7 @@
 #     #     cmd: "echooooo"
 
 # - name: Exemplify fail module
-#   hosts: centos7clients
+#   hosts: clients-vm-centos7
 #   gather_facts: false
 #   ignore_errors: true
 #   tasks:
@@ -265,7 +265,7 @@
 #         msg: This is the msg in debug
 
 # - name: Exemplify stat and assert
-#   hosts: rhel9clients
+#   hosts: clients-vm-rhel9
 #   gather_facts: false
 #   tasks:
 #     - name: Running stat
@@ -277,7 +277,7 @@
 #         that: statreg.stat.isdir
 
 # - name: Another example
-#   hosts: rhel9clients
+#   hosts: clients-vm-rhel9
 #   gather_facts: false
 #   vars_prompt:
 #     - name: file_size
@@ -295,7 +295,7 @@
 #       ansible.builtin.command: dd if=/dev/random of=random_file bs=1 count={{ file_size }}
 
 # - name: Non-idempotent command module
-#   hosts: rhel9clients
+#   hosts: clients-vm-rhel9
 #   gather_facts: false
 #   become: true
 #   tasks:
@@ -307,7 +307,7 @@
 #         msg: I do not get printed in the second-time execution cuz I'm not idempotent
 
 # - name: Idempotent command module
-#   hosts: rhel9clients
+#   hosts: clients-vm-rhel9
 #   gather_facts: true
 #   become: true
 #   ignore_errors: true
@@ -346,7 +346,7 @@
 #         # var: retval
 
 # - name: Demo custom facts on client
-#   hosts: rhel9clients
+#   hosts: clients-vm-rhel9
 #   gather_facts: false
 #   tasks:
 #     - name: Populating the facts file
@@ -358,7 +358,7 @@
 #           [localfacts]
 #           type: client
 # - name: Demo custom fact on servers
-#   hosts: rhel9servers
+#   hosts: servers-vm-rhel9
 #   gather_facts: false
 #   tasks:
 #     - name: Populating the facts file
@@ -371,7 +371,7 @@
 #           type: server
 
 # - name: Elucidate find module
-#   hosts: rhel9clients
+#   hosts: clients-vm-rhel9
 #   gather_facts: false
 #   become: false
 #   tasks:
@@ -398,7 +398,7 @@
 #       with_items: "{{ output.files }}"
 
 # - name: Illustrate templates
-#   hosts: rhel9server1
+#   hosts: server1-vm-rhel9
 #   gather_facts: true
 #   become: true
 #   vars:
@@ -428,7 +428,7 @@
 #         mode: "0644"
 
 # - name: Show roles
-#   hosts: rhel9server1
+#   hosts: server1-vm-rhel9
 #   gather_facts: true
 #   become: true
 #   pre_tasks:
@@ -439,7 +439,7 @@
 #     - role: geerlingguy.nginx
 
 # - name: Regurgitate lineinfile with validate and regexp
-#   hosts: rhel9clients
+#   hosts: clients-vm-rhel9
 #   gather_facts: false
 #   become: true
 #   tasks:
