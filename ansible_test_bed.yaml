@@ -514,6 +514,16 @@
 #         url: http://server1-vm-rhel9
 #       delegate_to: localhost
 
+- name: Check out synchronize
+  hosts: clients-vm-rhel9
+  gather_facts: false
+  become: false
+  tasks:
+    - name: Running rsync
+      ansible.posix.synchronize:
+        src: /ssfsfa
+        dest: /tmp
+
 
 # - name: "Ping"
 #   ansible.builtin.ping: null
