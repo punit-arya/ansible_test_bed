@@ -296,8 +296,8 @@
 
 # - name: Non-idempotent command module
 #   hosts: clients-vm-rhel9
-#   gather_facts: false
 #   become: true
+#   gather_facts: false
 #   tasks:
 #     - name: The command
 #       ansible.builtin.command: useradd joan
@@ -308,8 +308,8 @@
 
 # - name: Idempotent command module
 #   hosts: clients-vm-rhel9
-#   gather_facts: true
 #   become: true
+#   gather_facts: true
 #   ignore_errors: true
 #   tasks:
 #     - name: The command
@@ -372,8 +372,8 @@
 
 # - name: Elucidate find module
 #   hosts: clients-vm-rhel9
-#   gather_facts: false
 #   become: false
+#   gather_facts: false
 #   tasks:
 #     - name: Find ansible.cfg
 #       ansible.builtin.find:
@@ -399,8 +399,8 @@
 
 # - name: Illustrate templates
 #   hosts: server1-vm-rhel9
-#   gather_facts: true
 #   become: true
+#   gather_facts: true
 #   vars:
 #     anonymous_enable: true
 #     local_enable: true
@@ -418,8 +418,8 @@
 
 # - name: Exemplify templates
 #   hosts: remote
-#   gather_facts: true
 #   become: false
+#   gather_facts: true
 #   tasks:
 #     - name: Using templates
 #       ansible.builtin.template:
@@ -429,8 +429,8 @@
 
 # - name: Show roles
 #   hosts: server1-vm-rhel9
-#   gather_facts: true
 #   become: true
+#   gather_facts: true
 #   pre_tasks:
 #     - ansible.builtin.package:
 #         name: httpd
@@ -440,8 +440,8 @@
 
 # - name: Regurgitate lineinfile with validate and regexp
 #   hosts: clients-vm-rhel9
-#   gather_facts: false
 #   become: true
+#   gather_facts: false
 #   tasks:
 #     - name: Running blockinfile
 #       ansible.builtin.lineinfile:
@@ -452,8 +452,8 @@
 
 # - name: Exemplify tags, play one
 #   hosts: localhost
-#   gather_facts: false
 #   become: false
+#   gather_facts: false
 #   tasks:
 #     - name: Running debug
 #       ansible.builtin.debug:
@@ -465,8 +465,8 @@
 #
 # - name: Exemplify tags, play two
 #   hosts: localhost
-#   gather_facts: false
 #   become: false
+#   gather_facts: false
 #   tasks:
 #     - name: Running debug
 #       ansible.builtin.debug:
@@ -478,8 +478,8 @@
 
 # - name: Show delegate_to
 #   hosts: clients-vm-rhel9
-#   gather_facts: false
 #   become: true
+#   gather_facts: false
 #   tasks:
 #     - name: Copy file from localhost to server1-vm-rhel9
 #       ansible.builtin.copy:
@@ -497,8 +497,8 @@
 #
 # - name: See delegate_to again
 #   hosts: server1-vm-rhel9
-#   gather_facts: false
 #   become: true
+#   gather_facts: false
 #   tasks:
 #     - name: Use package
 #       ansible.builtin.package:
@@ -516,8 +516,8 @@
 
 # - name: Check out synchronize
 #   hosts: clients-vm-rhel9
-#   gather_facts: false
 #   become: false
+#   gather_facts: false
 #   tasks:
 #     - name: Running rsync
 #       ansible.posix.synchronize:
@@ -526,8 +526,8 @@
 
 # - name: Demo format_phone_number
 #   hosts: localhost
-#   gather_facts: false
 #   become: false
+#   gather_facts: false
 #   vars:
 #     number: "1234567890"
 #   tasks:
@@ -537,8 +537,8 @@
 
 # - name: Show off types
 #   hosts: localhost
-#   gather_facts: false
 #   become: false
+#   gather_facts: false
 #   vars:
 #     car: "mercedes"
 #     number: 10
@@ -568,9 +568,8 @@
 
 - name: Illustrate ipaddr module
   hosts: localhost
-  gather_facts: true
   become: false
-  ignore_errors: true
+  gather_facts: false
   vars:
     addresses:
       - 1.2.3.4/24
