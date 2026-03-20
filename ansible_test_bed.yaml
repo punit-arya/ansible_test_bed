@@ -524,17 +524,83 @@
 #         src: /ssfsfa
 #         dest: /tmp
 
-- name: Demo format_phone_number
-  hosts: localhost
-  gather_facts: false
-  become: false
-  vars:
-    number: "1234567890"
-  tasks:
-    - name: Running debug
-      ansible.builtin.debug:
-        msg: The formatted number is {{number | thearya.format_phone_number.format_phone_number}}
+# - name: Demo format_phone_number
+#   hosts: localhost
+#   gather_facts: false
+#   become: false
+#   vars:
+#     number: "1234567890"
+#   tasks:
+#     - name: Running debug
+#       ansible.builtin.debug:
+#         msg: The formatted number is {{number | thearya.format_phone_number.format_phone_number}}
 
+# - name: Show off types
+#   hosts: localhost
+#   gather_facts: false
+#   become: false
+#   vars:
+#     car: "mercedes"
+#     number: 10
+#     sunny: true
+#     rainy: "false"
+#   tasks:
+#     - name: String
+#       ansible.builtin.debug:
+#         msg: "'Tis a string"
+#       when:
+#         car == "mercedes"
+#     - name: Number
+#       ansible.builtin.debug:
+#         msg: "'Tis a number"
+#       when:
+#         number == 10
+#     - name: Boolean
+#       ansible.builtin.debug:
+#         msg: "'Tis true!"
+#       when:
+#         sunny
+#     - name: Boolean again
+#       ansible.builtin.assert:
+#         that: rainy
+#         success_msg: "rainy is a Boolean"
+#         fail_msg: "rainy1 is not a Boolean"
+
+- name: Illustrate ipaddr module
+  hosts: localhost
+  gather_facts: true
+  become: false
+  ignore_errors: true
+  vars:
+    addresses:
+      - 1.2.3.4/24
+      - 10.0.0.0/8
+    netmask: "{{ ansible_default_ipv4.network }}/{{ ansible_default_ipv4.netmask }}"
+  tasks:
+    - name: Print the IP address
+      ansible.builtin.debug:
+        msg: The IP is {{ ansible_facts["default_ipv4"] }}
+    - name: Validate the IP address
+      ansible.builtin.debug:
+        msg: "{{ ansible_facts['default_ipv4']['address'] | ansible.utils.ipaddr }}"
+    - name: Print the subnet mask
+      ansible.builtin.debug:
+        msg: "{{ netmask | ansible.utils.ipaddr('netmask') }}"
+    - name: Convert the subnet mask to CIDR notation
+      ansible.builtin.debug:
+        msg: "{{ netmask | ansible.utils.ipaddr('net') }}"
+    - name: Filter out IP addresses which are invalid CIDR addresses
+      ansible.builtin.debug:
+        msg: "{{ addresses | ansible.utils.ipaddr('host/prefix') }}"
+    - name: Print the size of the subnet
+      ansible.builtin.debug:
+        msg: "{{ ansible_facts['default_ipv4']['network'] | ansible.utils.ipaddr('size') }}"
+    - name: Convert to IPv6 format
+      ansible.builtin.debug:
+        msg: "{{ addresses | ansible.utils.ipv4('ipv6') }}"
+    - name: Convert to the integer format
+      ansible.builtin.debug:
+        msg: "{{ ansible_facts['default_ipv4']['address'] | ansible.utils.ipaddr('int') }}"
 
 # - name: "Ping"
 #   ansible.builtin.ping: null
