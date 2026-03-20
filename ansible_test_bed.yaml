@@ -15,34 +15,34 @@
 #   ansible.posix.selinux:
 #     policy: targeted
 #     state: enforcing
-# - name: Creating user {{myuser}}
+# - name: Creating user {{ myuser }}
 #   ansible.builtin.user:
-#     name: "{{myuser}}"
+#     name: "{{ myuser }}"
 #     shell: /bin/bash
 #     state: absent
 #   register: variab
 # - name: Printing variab
 #   ansible.builtin.debug:
-#     msg: Here is the contents of "{{variab}}"
+#     msg: Here is the contents of "{{ variab }}"
 # - name: Getting facts
 #   ansible.builtin.debug:
-#     var: ansible_facts["all_ipv4_addresses"]  # {{not needed cuz it runs in a jinja template already, so it'll lead to double interpolation
+#     var: ansible_facts["all_ipv4_addresses"]  # {{ not needed cuz it runs in a jinja template already, so it'll lead to double interpolation
 #     var: ansible_facts["memory_mb"]["swap"]["free"]
 #     msg: >
-#       IP of this host is {{ansible_facts.default_ipv4.address}}
+#       IP of this host is {{ ansible_facts.default_ipv4.address }}
 # - name: Demo set_fact
 #   ansible.builtin.set_fact:
 #     myfirstfact: saturday
 #     mysecondfact: evening
 # - name: Demo again.
 #   ansible.builtin.debug:
-#     msg: Recording this on {{myfirstfact}} {{mysecondfact}}
+#     msg: Recording this on {{ myfirstfact }} {{ mysecondfact }}
 # - name: New task to demo set_fact
 #   ansible.builtin.debug:
-#     msg: it is still {{myfirstfact}} {{mysecondfact}}
+#     msg: it is still {{ myfirstfact }} {{ mysecondfact }}
 # - name: Demo ansible_mounts in ansible_facts
 #   ansible.builtin.debug:
-#     msg: Value is {{ansible_facts["mounts"][29]["block_size"]}}
+#     msg: Value is {{ ansible_facts["mounts"][29]["block_size"] }}
 # - name: Demo register
 #   register: dateval
 #   ansible.builtin.command:
@@ -54,15 +54,15 @@
 # - name: Demo vault for new file
 #   ansible.builtin.debug:
 #     msg: >
-#       This is the contents of the new vault file: {{password}}
+#       This is the contents of the new vault file: {{ password }}
 # - name: Demo vault for existing file
 #   ansible.builtin.debug:
 #     msg: >
-#       This is the contents of the new vault file: {{password1}}
+#       This is the contents of the new vault file: {{ password1 }}
 
 # - name: Demo loop
 #   ansible.builtin.debug:
-#     msg: "{{item}}"
+#     msg: "{{ item }}"
 #   loop:
 #     - vsftpd
 #     - httpd
@@ -70,13 +70,13 @@
 
 # - name: Looping over a variable
 #   ansible.builtin.debug:
-#     msg: The loop item is {{item}}
-#   loop: "{{loopingstuff}}"
+#     msg: The loop item is {{ item }}
+#   loop: "{{ loopingstuff }}"
 
 # - name: Demo hashed loop items
 #   ansible.builtin.debug:
-#     msg: User name is {{item.uname}} and group is {{item.ugroups}}
-#   loop: "{{myusers}}"
+#     msg: User name is {{ item.uname }} and group is {{ item.ugroups }}
+#   loop: "{{ myusers }}"
 
 # - name: Demo handlers, force_handlers
 #   hosts: clients-vm-rhel9
@@ -138,9 +138,9 @@
 #   tasks:
 #     - name: VM-specific installation
 #       ansible.builtin.debug:
-#         # msg: This_word_is_needed {{ansible_facts.hostname}} is in {{vmfilter}}
+#         # msg: This_word_is_needed {{ ansible_facts.hostname }} is in {{ vmfilter }}
 #         msg: available size is greater than 10 GB
-#       loop: "{{ansible_facts['mounts']}}"
+#       loop: "{{ ansible_facts['mounts'] }}"
 #       when:
 #         # ansible_hostname in vmfilter and "14" in ansible_date_time["day"]
 #         # - ansible_hostname in vmfilter
@@ -156,15 +156,15 @@
 #     prompt: which user are you looking for ?
 #     private: false
 #   tasks:
-#     - name: Checking whether we found {{user_name}}
+#     - name: Checking whether we found {{ user_name }}
 #       ansible.builtin.command: cat /etc/passwd
 #       register: passwd_contents
-#     - name: Printing {{user_name}}
+#     - name: Printing {{ user_name }}
 #       ansible.builtin.debug:
 #         var: passwd_contents
 #     - name: Printing the passwd file
 #       ansible.builtin.debug:
-#         msg: echo passwd contains user {{user_name}}
+#         msg: echo passwd contains user {{ user_name }}
 #       when: passwd_contents["stdout"].find(user_name) != -1
 
 # - name: Demo block with rescue and always keywords
@@ -292,7 +292,7 @@
 #         fail_msg: file size IS NOT between 1 and 10, aborting
 #         success_msg: file size IS between 1 and 10, continuing
 #     - name: Create file
-#       ansible.builtin.command: dd if=/dev/random of=random_file bs=1 count={{file_size}}
+#       ansible.builtin.command: dd if=/dev/random of=random_file bs=1 count={{ file_size }}
 
 # - name: Non-idempotent command module
 #   hosts: clients-vm-rhel9
@@ -342,7 +342,7 @@
 #       register: retval
 #     - name: Debug
 #       ansible.builtin.debug:
-#         msg: The checksum is {{retval['stat']['checksum']}}
+#         msg: The checksum is {{ retval['stat']['checksum'] }}
 #         # var: retval
 
 # - name: Demo custom facts on client
@@ -384,10 +384,10 @@
 #     - name: Running debug
 #       ansible.builtin.debug:
 #         var: item.path
-#       with_items: "{{output.files}}"
+#       with_items: "{{ output.files }}"
 #     - name: Running blockinfile
 #       ansible.builtin.blockinfile:
-#         path: "{{item.path}}"
+#         path: "{{ item.path }}"
 #         insertafter: "defaults"
 #         marker: "##<!-- {mark} ANSIBLE-MANAGED BLOCK -->##"
 #         block: |
@@ -395,7 +395,7 @@
 #           fact_caching_timeout = 3600
 #           fact_caching_connection = localhost:6379:0
 #         state: absent
-#       with_items: "{{output.files}}"
+#       with_items: "{{ output.files }}"
 
 # - name: Illustrate templates
 #   hosts: server1-vm-rhel9
@@ -533,7 +533,7 @@
 #   tasks:
 #     - name: Running debug
 #       ansible.builtin.debug:
-#         msg: The formatted number is {{number | thearya.format_phone_number.format_phone_number}}
+#         msg: The formatted number is {{ number | thearya.format_phone_number.format_phone_number }}
 
 # - name: Show off types
 #   hosts: localhost
@@ -626,7 +626,7 @@
 #       changed_when: false
 #
 #     - name: Start example Node.js app.
-#       command: "/usr/local/bin/forever start {{node_apps_location}}/app/app.js"
+#       command: "/usr/local/bin/forever start {{ node_apps_location }}/app/app.js"
 #       when: "forever_list.stdout.find(node_apps_location + '/app/app.js') == -1"
 
 # - name: Ensure firewalld is stopped (since this is for testing).
@@ -636,11 +636,11 @@
 # - name: Install Forever (to run our Node.js app).
 #   npm: name=forever global=yes state=present
 # - name: Ensure Node.js app folder exists.
-#   file: "path={{node_apps_location}} state=directory"
+#   file: "path={{ node_apps_location }} state=directory"
 # - name: Copy example Node.js app to server.
-#   copy: "src=app dest={{node_apps_location}}"
+#   copy: "src=app dest={{ node_apps_location }}"
 # - name: Install app dependencies defined in package.json.
-#   npm: path={{node_apps_location}}/app
+#   npm: path={{ node_apps_location }}/app
 
 # - name: Install Apache.
 #   yum:
@@ -650,8 +650,8 @@
 #     state: present
 # - name: Copy configuration files.
 #   copy:
-#     src: "{{item.src}}"
-#     dest: "{{item.dest}}"
+#     src: "{{ item.src }}"
+#     dest: "{{ item.dest }}"
 #     owner: root
 #     group: root
 #     mode: 644
@@ -667,15 +667,15 @@
 #     enabled: true
 
 # - import_playbook: sync_time.yaml
-# - import_playbook: "/home/punit/etc/ansible_test_bed/{{import_from_extra_var}}"
+# - import_playbook: "/home/punit/etc/ansible_test_bed/{{ import_from_extra_var }}"
 # - name: "First Playbook"
 #   hosts: all
 #   environment:
 #     TERM: xterm
 #   vars:
 #     url: "http://example.com/~user/blog/title/foo-bar-baz"
-#     var_hosts: "{{lookup('file', '/etc/hosts')}}"
-#     motd_content: "{{lookup('file', '/etc/motd')}}"
+#     var_hosts: "{{ lookup('file', '/etc/hosts') }}"
+#     motd_content: "{{ lookup('file', '/etc/motd') }}"
 #     import_from_vars_keyword: /home/punit/etc/ansible_test_bed/imported_from_keyword.yaml
 #   tasks:
 #     - name: "Allow Access From 10.0.0.1"
@@ -760,9 +760,9 @@
 #       #       dest: "tmp/jinja2.txt"
 #       # - name: "touch Files With An Optional Mode"
 #       #   ansible.builtin.file:
-#       #       path: "{{item.fileName}}"
+#       #       path: "{{ item.fileName }}"
 #       #       state: touch
-#       #       mode: "{{item.mode | default(omit)}}"
+#       #       mode: "{{ item.mode | default(omit) }}"
 #       #   loop:
 #       #       - fileName: tmp/foo
 #       #       - fileName: tmp/bar
@@ -811,21 +811,21 @@
 #       #   block:
 #       #       - name: "/etc/hosts"
 #       #         ansible.builtin.debug:
-#       #             msg: "Value of 'var_hosts' is {{var_hosts}}"
+#       #             msg: "Value of 'var_hosts' is {{ var_hosts }}"
 #             # - name: "/etc/motd"
 #             #   ansible.builtin.debug:
-#             #       msg: "Value of 'motd_content' is {{motd_content}}"  # ?
+#             #       msg: "Value of 'motd_content' is {{ motd_content }}"  # ?
 #       # - name: "lookup and q"
 #       #   block:
 #       #       - name: "lookup"
 #       #         ansible.builtin.debug:
 #       #             msg: "{format yaml{item}}"
-#       #         loop: "{{lookup('ns.col.lookup_items', wantlist = True)}}"  # ?
+#       #         loop: "{{ lookup('ns.col.lookup_items', wantlist = True) }}"  # ?
 #       #       - name: "q"
 #       #         ansible.builtin.debug:
-#       #             msg: "{{item}}"
-#       #         loop: "{{q('ns.col.lookup_items')}}"  # ?
+#       #             msg: "{{ item }}"
+#       #         loop: "{{ q('ns.col.lookup_items') }}"  # ?
 #       # - name: "Get Date And Time"  # ?
 #       #   ansible.builtin.shell: date > date.out ; cat date.out
 #       #  # changed_when: false
-# - import_playbook: "{{import_from_vars_keyword}}"
+# - import_playbook: "{{ import_from_vars_keyword }}"
