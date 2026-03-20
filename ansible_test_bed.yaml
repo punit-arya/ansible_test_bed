@@ -566,40 +566,108 @@
 #         success_msg: "rainy is a Boolean"
 #         fail_msg: "rainy1 is not a Boolean"
 
-- name: Illustrate ipaddr module
+# - name: Illustrate ipaddr module
+#   hosts: localhost
+#   become: false
+#   gather_facts: true
+#   ignore_errors: true
+#   vars:
+#     addresses:
+#       - 1.2.3.4/24
+#       - 10.0.0.0/8
+#     netmask: "{{ ansible_default_ipv4.network }}/{{ ansible_default_ipv4.netmask }}"
+#   tasks:
+#     - name: Print the IP address
+#       ansible.builtin.debug:
+#         msg: The IP is {{ ansible_facts["default_ipv4"] }}
+#     - name: Validate the IP address
+#       ansible.builtin.debug:
+#         msg: "{{ ansible_facts['default_ipv4']['address'] | ansible.utils.ipaddr }}"
+#     - name: Print the subnet mask
+#       ansible.builtin.debug:
+#         msg: "{{ netmask | ansible.utils.ipaddr('netmask') }}"
+#     - name: Convert the subnet mask to CIDR notation
+#       ansible.builtin.debug:
+#         msg: "{{ netmask | ansible.utils.ipaddr('net') }}"
+#     - name: Filter out IP addresses which are invalid CIDR addresses
+#       ansible.builtin.debug:
+#         msg: "{{ addresses | ansible.utils.ipaddr('host/prefix') }}"
+#     - name: Print the size of the subnet
+#       ansible.builtin.debug:
+#         msg: "{{ ansible_facts['default_ipv4']['network'] | ansible.utils.ipaddr('size') }}"
+#     - name: Convert to IPv6 format
+#       ansible.builtin.debug:
+#         msg: "{{ addresses | ansible.utils.ipv4('ipv6') }}"
+#     - name: Convert to the integer format
+#       ansible.builtin.debug:
+#         msg: "{{ ansible_facts['default_ipv4']['address'] | ansible.utils.ipaddr('int') }}"
+
+# - name: Checking out map
+#   hosts: clients-vm-rhel9
+#   become: true
+#   gather_facts: false
+#   ignore_errors: false
+#   vars:
+#     basedir: /var/www/html
+#   tasks:
+#     - name: Running dnf
+#       ansible.builtin.dnf:
+#         name: httpd
+#         state: present
+#         use_backend: dnf4
+#     - name: Running find (on basedir)
+#       ansible.builtin.find:
+#         paths: "{{ basedir }}"
+#         recurse: true
+#       register: basedir_files
+#     - name: Running debug (print var)
+#       ansible.builtin.debug:
+#         var: basedir_files
+#     - name: Running set_fact
+#       ansible.builtin.set_fact:
+#         webfileslist: "{{ basedir_files['files'] | map(attribute = 'path') | list }}"
+#     - name: Running debug again (print var)
+#       ansible.builtin.debug:
+#         var: webfileslist
+#     - name: Show relpath arg of map
+#       ansible.builtin.set_fact:
+#         webfilesrelative: "{{ webfileslist | map('relpath', basedir) | list }}"
+#     - name: Running debug (on webfilesrelative)
+#       ansible.builtin.debug:
+#         var: webfilesrelative
+#
+# - name: Checking relpath function used in map earlier
+#   hosts: localhost
+#   become: false
+#   gather_facts: false
+#   tasks:
+#     - name: Running set_fact (creating a fact)
+#       ansible.builtin.set_fact:
+#         myfactvar: "{{ ['/abc/def/ghi', '/abc/jkl/mno'] | map('relpath', '/abc/') }}"
+#     - name: Running debug (printing var)
+#       ansible.builtin.debug:
+#         var: myfactvar
+
+- name: Learning flatten filter
   hosts: localhost
   become: false
   gather_facts: false
   vars:
-    addresses:
-      - 1.2.3.4/24
-      - 10.0.0.0/8
-    netmask: "{{ ansible_default_ipv4.network }}/{{ ansible_default_ipv4.netmask }}"
+    nested:
+      - [1, 2, 3]
+      - [4, 5, 6]
+      - [7, 8, 9]
   tasks:
-    - name: Print the IP address
+    - name: Running debug to show the nested list
       ansible.builtin.debug:
-        msg: The IP is {{ ansible_facts["default_ipv4"] }}
-    - name: Validate the IP address
+        var: nested
+    - name: Running flatten filter
+      ansible.builtin.set_fact:
+        flattened: "{{ nested | flatten }}"
+    - name: Running debug to show the flattening
       ansible.builtin.debug:
-        msg: "{{ ansible_facts['default_ipv4']['address'] | ansible.utils.ipaddr }}"
-    - name: Print the subnet mask
-      ansible.builtin.debug:
-        msg: "{{ netmask | ansible.utils.ipaddr('netmask') }}"
-    - name: Convert the subnet mask to CIDR notation
-      ansible.builtin.debug:
-        msg: "{{ netmask | ansible.utils.ipaddr('net') }}"
-    - name: Filter out IP addresses which are invalid CIDR addresses
-      ansible.builtin.debug:
-        msg: "{{ addresses | ansible.utils.ipaddr('host/prefix') }}"
-    - name: Print the size of the subnet
-      ansible.builtin.debug:
-        msg: "{{ ansible_facts['default_ipv4']['network'] | ansible.utils.ipaddr('size') }}"
-    - name: Convert to IPv6 format
-      ansible.builtin.debug:
-        msg: "{{ addresses | ansible.utils.ipv4('ipv6') }}"
-    - name: Convert to the integer format
-      ansible.builtin.debug:
-        msg: "{{ ansible_facts['default_ipv4']['address'] | ansible.utils.ipaddr('int') }}"
+        msg: "The flattened list is: {{ flattened }}"
+
 
 # - name: "Ping"
 #   ansible.builtin.ping: null
