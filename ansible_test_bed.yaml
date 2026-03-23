@@ -703,68 +703,92 @@
 #       loop: "{{ lookup('subelements', servers, 'applications') }}"
 #       tags: debug
 
-- name: Checking out dict2items filter
-  hosts: localhost
-  become: false
-  gather_facts: false
-  vars:
-    dict1:
-      name: anna
-      age: 25
-      city: New York
-      occupation: engineer
-  tasks:
-    - name: Running debug to see "before the filter"
-      ansible.builtin.debug:
-        msg: "{{ dict1 }}"
-    - name: Running dict2items filter and set_fact
-      ansible.builtin.set_fact:
-        iterable_dict: "{{ dict1 | dict2items }}"
-    - name: Running debug to print the list
-      ansible.builtin.debug:
-        var: iterable_dict
-    - name: Running debug to loop over the list
-      ansible.builtin.debug:
-        msg: "Key: {{ item.key }}; Value: {{ item.value }}"
-      loop: "{{ iterable_dict }}"
+# - name: Checking out dict2items filter
+#   hosts: localhost
+#   become: false
+#   gather_facts: false
+#   vars:
+#     dict1:
+#       name: anna
+#       age: 25
+#       city: New York
+#       occupation: engineer
+#   tasks:
+#     - name: Running debug to see "before the filter"
+#       ansible.builtin.debug:
+#         msg: "{{ dict1 }}"
+#     - name: Running dict2items filter and set_fact
+#       ansible.builtin.set_fact:
+#         iterable_dict: "{{ dict1 | dict2items }}"
+#     - name: Running debug to print the list
+#       ansible.builtin.debug:
+#         var: iterable_dict
+#     - name: Running debug to loop over the list
+#       ansible.builtin.debug:
+#         msg: "Key: {{ item.key }}; Value: {{ item.value }}"
+#       loop: "{{ iterable_dict }}"
+#
+# - name: Elucidate selectattr filter
+#   hosts: localhost
+#   become: false
+#   gather_facts: false
+#   vars:
+#     users:
+#       - name: alice
+#         active: true
+#         role: admin
+#       - name: bob
+#         active: false
+#         role: user
+#       - name: caroline
+#         active: true
+#         role: user
+#       - name: diana
+#         active: false
+#         role: guest
+#   tasks:
+#     - name: Running set_fact and selectattr filter to filter for active users
+#       ansible.builtin.set_fact:
+#         active_users: "{{ users | selectattr('active', 'equalto', true) | list }}"
+#     - name: Running debug to print the filtered out members of the dict
+#       ansible.builtin.debug:
+#         var: active_users
+#     - name: Running set_fact and selectattr filter to filter for inactive users
+#       ansible.builtin.set_fact:
+#         inactive_users: "{{ users | selectattr('active', 'equalto', false) | list }}"
+#     - name: Running debug to print the filtered out members of the dict again
+#       ansible.builtin.debug:
+#         var: inactive_users
+#     - name: Running set_fact and selectattr filter to filter user role users
+#       ansible.builtin.set_fact:
+#         user_role_users: "{{ users | selectattr('role', 'equalto', 'user') | list }}"
+#     - name: Running debug to print the filtered out members of the dict and again
+#       ansible.builtin.debug:
+#         var: user_role_users
 
-- name: Elucidate selectattr filter
-  hosts: localhost
-  become: false
+- name: Lesson 11 lab
+  hosts: server1-vm-rhel9
+  become: true
   gather_facts: false
-  vars:
-    users:
-      - name: alice
-        active: true
-        role: admin
-      - name: bob
-        active: false
-        role: user
-      - name: caroline
-        active: true
-        role: user
-      - name: diana
-        active: false
-        role: guest
+  vars_prompt:
+    - name: myservice
+      prompt: Which service ?
+      private: false
+    - name: mystate
+      prompt: ENABLED or disabled ?
+      private: false
+    - name: myzone
+      prompt: Zone ?
+      private: false
   tasks:
-    - name: Running set_fact and selectattr filter to filter for active users
-      ansible.builtin.set_fact:
-        active_users: "{{ users | selectattr('active', 'equalto', true) | list }}"
-    - name: Running debug to print the filtered out members of the dict
+    - name: Run debug to print the values
       ansible.builtin.debug:
-        var: active_users
-    - name: Running set_fact and selectattr filter to filter for inactive users
-      ansible.builtin.set_fact:
-        inactive_users: "{{ users | selectattr('active', 'equalto', false) | list }}"
-    - name: Running debug to print the filtered out members of the dict again
-      ansible.builtin.debug:
-        var: inactive_users
-    - name: Running set_fact and selectattr filter to filter user role users
-      ansible.builtin.set_fact:
-        user_role_users: "{{ users | selectattr('role', 'equalto', 'user') | list }}"
-    - name: Running debug to print the filtered out members of the dict and again
-      ansible.builtin.debug:
-        var: user_role_users
+        msg: "myservice: {{ myservice }}; mystate: {{ mystate }}; myzone: {{ myzone }}"
+    - name: Run firewalld module
+      ansible.posix.firewalld:
+        service: "{{ myservice }}"
+        state: "{{ mystate | default('enabled', True) }}"
+        zone: "{{ myzone | default(omit) }}"
 
 
 # - name: "Ping"
