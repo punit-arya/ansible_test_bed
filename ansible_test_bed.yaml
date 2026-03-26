@@ -766,29 +766,102 @@
 #       ansible.builtin.debug:
 #         var: user_role_users
 
-- name: Lesson 11 lab
-  hosts: server1-vm-rhel9
-  become: true
-  gather_facts: false
-  vars_prompt:
-    - name: myservice
-      prompt: Which service ?
-      private: false
-    - name: mystate
-      prompt: ENABLED or disabled ?
-      private: false
-    - name: myzone
-      prompt: Zone ?
-      private: false
-  tasks:
-    - name: Run debug to print the values
-      ansible.builtin.debug:
-        msg: "myservice: {{ myservice }}; mystate: {{ mystate }}; myzone: {{ myzone }}"
-    - name: Run firewalld module
-      ansible.posix.firewalld:
-        service: "{{ myservice }}"
-        state: "{{ mystate | default('enabled', True) }}"
-        zone: "{{ myzone | default(omit) }}"
+# - name: Lesson 11 lab
+#   hosts: server1-vm-rhel9
+#   become: true
+#   gather_facts: false
+#   vars_prompt:
+#     - name: myservice
+#       prompt: Which service ?
+#       private: false
+#     - name: mystate
+#       prompt: ENABLED or disabled ?
+#       private: false
+#     - name: myzone
+#       prompt: Zone ?
+#       private: false
+#   tasks:
+#     - name: Run debug to print the values
+#       ansible.builtin.debug:
+#         msg: "myservice: {{ myservice }}; mystate: {{ mystate }}; myzone: {{ myzone }}"
+#     - name: Run firewalld module
+#       ansible.posix.firewalld:
+#         service: "{{ myservice }}"
+#         state: "{{ mystate | default('enabled', True) }}"
+#         zone: "{{ myzone | default(omit) }}"
+
+# - name: Enlighten look-up plugin type
+#   hosts: clients_vm_rhel9
+#   become: true
+#   gather_facts: false
+#   vars:
+#     users:
+#       - punit1
+#       - punit2
+#     keyval: "{{ lookup('file', 'etc/id_rsa.pub') }}"
+#   tasks:
+#     - name: Run user module to create users
+#       ansible.builtin.user:
+#         name: "{{ item }}"
+#       loop: "{{ users }}"
+#     # - name: Run authorized_key and lookup to transfer SSH keys
+#     #   ansible.posix.authorized_key:
+#     #     user: "{{ item }}"
+#     #     # key: "{{ lookup('file', '/home/' + item + '/.ssh/id_ed25519.pub') }}"
+#     #     key: "{{ lookup('file', 'etc/id_rsa.pub') }}"
+#     #   loop: "{{ users }}"
+#     - name: Run debug to print the key
+#       ansible.builtin.debug:
+#         var: keyval
+#     - name: Run lineinfile as an alternate to authorized_key
+#       ansible.builtin.lineinfile:
+#         line: "{{ keyval }}"
+#         path: "{{ '/home/' + item + '/.ssh/authorized_keys' }}"
+#       loop: "{{ users }}"
+#
+# - name: Clarify the "url" type of lookup type of plug-in
+#   hosts: localhost
+#   become: false
+#   gather_facts: false
+#   tasks:
+#     - name: Run debug module and "url" type of lookup type of plug-in
+#       ansible.builtin.debug:
+#         msg: The URL "http://server1-vm-rhel9" shows {{ lookup('url', 'http://server1-vm-rhel9') }}
+#
+# - name: Check out query parameter of lookup plug-in
+#   hosts: localhost
+#   become: false
+#   gather_facts: false
+#   vars:
+#     contens: "{{ query('file', '/home/punit/.ssh/authorized_keys') }}"
+#   tasks:
+#     - name: Run debug to print the list
+#       ansible.builtin.debug:
+#         var: contens
+#     - name: Run debug to print the list again
+#       ansible.builtin.debug:
+#         msg: "ITEM ITEM ITEM: {{ item }}"
+#       loop: "{{ contens }}"
+#
+# - name: Work on query Jinja function
+#   hosts: clients_vm_rhel9
+#   become: true
+#   gather_facts: false
+#   vars:
+#     mypassword: "{{ lookup('password', 'credentials/' + item + ' length=6') }}" # Build a parameter list including "length" and "credentials/<FILE_NAME>".
+#   tasks:
+#     - name: Run debug to show the password
+#       ansible.builtin.debug:
+#         msg: Setting password {{ mypassword }} for user {{ item }}
+#         # msg: "Setting password {{ lookup('password', 'credentials/' + item + ' length=6') }} for user {{ item }}"
+#       loop: "{{ query('lines', 'cat users.txt') }}"
+#     - name: Run user to update password
+#       ansible.builtin.user:
+#         name: "{{ item }}"
+#         password: "{{ mypassword | password_hash('sha512') }}"
+#         update_password: on_create
+#       loop: "{{ query('lines', 'cat users.txt') }}"
+
 
 
 # - name: "Ping"

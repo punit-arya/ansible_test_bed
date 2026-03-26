@@ -1,14 +1,14 @@
 centos7:
     children:
-        clients-vm-centos7:
+        clients_vm_centos7:
             hosts:
-                client1-vm-centos7:
+                client1_vm_centos7:
                     ansible_host: 172.16.65.10
             vars:
                 enabled: True
-        servers-vm-centos7:
+        servers_vm_centos7:
             hosts:
-                server1-vm-centos7:
+                server1_vm_centos7:
                     ansible_host: 172.16.65.15
     vars:
         ansible_python_interpreter: /opt/rh/rh-python38/root/bin/python3.8
@@ -19,20 +19,20 @@ centos7:
 
 rhel9:
     children:
-        clients-vm-rhel9:
+        clients_vm_rhel9:
             hosts:
-                client1-vm-rhel9:
+                client1_vm_rhel9:
                     ansible_host: 172.16.65.30
-        servers-vm-rhel9:
+        servers_vm_rhel9:
             hosts:
-                server1-vm-rhel9:
+                server1_vm_rhel9:
                     ansible_host: 172.16.65.35
                     enabled: False
                     status: needs
-                server2-vm-rhel9:
+                server2_vm_rhel9:
                     ansible_host: 172.16.65.36
                     enabled:
-                server3-vm-rhel9:
+                server3_vm_rhel9:
                     ansible_host: 172.16.65.37
                     enabled: None
     vars:
@@ -43,20 +43,20 @@ rhel9:
 
 rhel10:
     children:
-        clients-vm-rhel10:
+        clients_vm_rhel10:
             hosts:
-                client1-vm-rhel10:
+                client1_vm_rhel10:
                     ansible_host: 172.16.65.40
-        servers-vm-rhel10:
+        servers_vm_rhel10:
             hosts:
-                server1-vm-rhel10:
+                server1_vm_rhel10:
                     ansible_host: 172.16.65.45
                     enabled: False
                     status: needs
-                server2-vm-rhel10:
+                server2_vm_rhel10:
                     ansible_host: 172.16.65.46
                     enabled:
-                server3-vm-rhel10:
+                server3_vm_rhel10:
                     ansible_host: 172.16.65.47
                     enabled: None
     vars:
