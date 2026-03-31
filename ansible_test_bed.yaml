@@ -862,7 +862,46 @@
 #         update_password: on_create
 #       loop: "{{ query('lines', 'cat users.txt') }}"
 
-
+# - name: Demonstrate "env" and "template" lookup plug-ins
+#   hosts: clients_vm_rhel9
+#   become: false
+#   gather_facts: false
+#   vars:
+#     language: "{{ lookup('env', 'LANG') | default('C.UTF-8', True) }}"
+#     hostname: "{{ lookup('env', 'HOSTNAME') | default('DEFAULTHOST', True) }}"
+#   tasks:
+#     - name: Run debug to print the "language" variable
+#       ansible.builtin.debug:
+#         var: language
+#     - name: Run debug to print the "hostname" variable
+#       ansible.builtin.debug:
+#         var: hostname
+#     - name: Use copy module to install the right MOTD file
+#       ansible.builtin.copy:
+#         content: "{{ lookup('template', 'motd.' + language + '.j2') }}"
+#         dest: /etc/motd
+#         mode: "0644"
+#
+# - name: Learn pipe lookup plug-in.
+#   hosts: localhost
+#   become: false
+#   gather_facts: false
+#   tasks:
+#     - name: Run debug and "pipe"
+#       ansible.builtin.debug:
+#         msg: "{{ lookup('pipe', 'date') }}"
+#
+# - name: Learn lines lookup plug-in
+#   hosts: localhost
+#   become: true
+#   gather_facts: false
+#   tasks:
+#     - name: Use debug and "lines".
+#       ansible.builtin.debug:
+#         msg: "{{ item[0] }}"
+#       loop:
+#         - "{{ query('lines', 'cat /etc/passwd') }}"
+#         - "{{ query('lines', 'cat /etc/shadow') }}"
 
 # - name: "Ping"
 #   ansible.builtin.ping: null
