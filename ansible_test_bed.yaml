@@ -903,6 +903,19 @@
 #         - "{{ query('lines', 'cat /etc/passwd') }}"
 #         - "{{ query('lines', 'cat /etc/shadow') }}"
 
+- name: Testing "fileglob" lookup plug-in
+  hosts: localhost
+  become: false
+  gather_facts: false
+  tasks:
+    - name: Running "fileglob"
+      ansible.builtin.debug:
+        msg: "{{ item }}"
+      loop: "{{ query('fileglob', '~/.*~') }}"
+    - name: Running "fileglob" again
+      ansible.builtin.debug:
+        msg: "{{ lookup('fileglob', '~/.*~') }}"
+
 # - name: "Ping"
 #   ansible.builtin.ping: null
 # - name: "Print"
