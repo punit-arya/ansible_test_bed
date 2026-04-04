@@ -925,31 +925,41 @@
 #       ansible.builtin.debug:
 #         var: ansible_facts
 
-- name: Check out "test" plug-ins
+# - name: Check out "test" plug-ins
+#   hosts: localhost
+#   become: false
+#   gather_facts: false
+#   vars:
+#     all_addresses:
+#       - ip: "192.168.1.10"
+#         type: "fixed"
+#       - ip: "192.168.1.11"
+#         type: "dynamic"
+#       - ip: "192.168.1.12"
+#         type: "fixed"
+#       - ip: "192.168.1.13"
+#         type: "dynamic"
+#   tasks:
+#     - name: Use set_fact, selectattr, and list filter plug-ins
+#       ansible.builtin.set_fact:
+#         only_fixed_addresses: "{{ all_addresses | selectattr('type', 'equalto', 'fixed') | list }}"
+#     - name: Use debug to print the set fact
+#       ansible.builtin.debug:
+#         var: only_fixed_addresses
+#     - name: Use debug and loop to print in a nicer way
+#       ansible.builtin.debug:
+#         msg: "IP address: {{ item.ip }}"
+#       loop: "{{ only_fixed_addresses }}"
+
+- name: Use callback plug-in "minimal" to minimize the playbook output
   hosts: localhost
   become: false
-  gather_facts: false
-  vars:
-    all_addresses:
-      - ip: "192.168.1.10"
-        type: "fixed"
-      - ip: "192.168.1.11"
-        type: "dynamic"
-      - ip: "192.168.1.12"
-        type: "fixed"
-      - ip: "192.168.1.13"
-        type: "dynamic"
+  gather_facts: true
   tasks:
-    - name: Use set_fact, selectattr, and list filter plug-ins
-      ansible.builtin.set_fact:
-        only_fixed_addresses: "{{ all_addresses | selectattr('type', 'equalto', 'fixed') | list }}"
-    - name: Use debug to print the set fact
+    - name: Use "debug" to print one key from gathered Ansible facts
       ansible.builtin.debug:
-        var: only_fixed_addresses
-    - name: Use debug and loop to print in a nicer way
-      ansible.builtin.debug:
-        msg: "IP address: {{ item.ip }}"
-      loop: "{{ only_fixed_addresses }}"
+        var: ansible_facts["memfree_mb"]
+
 
 # - name: "Ping"
 #   ansible.builtin.ping: null
