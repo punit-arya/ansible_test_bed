@@ -903,27 +903,53 @@
 #         - "{{ query('lines', 'cat /etc/passwd') }}"
 #         - "{{ query('lines', 'cat /etc/shadow') }}"
 
-- name: Testing "fileglob" lookup plug-in
-  hosts: client1_vm_rhel9
-  become: false
-  gather_facts: true
-  tasks:
-    - name: Running "fileglob"
-      ansible.builtin.debug:
-        msg: "{{ item }}"
-      loop: "{{ query('fileglob', '~/.*~') }}"
-    - name: Running "fileglob" again
-      ansible.builtin.debug:
-        msg: "{{ lookup('fileglob', '~/.*~') }}"
+# - name: Testing "fileglob" lookup plug-in
+#   hosts: client1_vm_rhel9
+#   become: false
+#   gather_facts: true
+#   tasks:
+#     - name: Running "fileglob"
+#       ansible.builtin.debug:
+#         msg: "{{ item }}"
+#       loop: "{{ query('fileglob', '~/.*~') }}"
+#     - name: Running "fileglob" again
+#       ansible.builtin.debug:
+#         msg: "{{ lookup('fileglob', '~/.*~') }}"
+#
+# - name: Test caching of facts
+#   hosts: client1_vm_rhel9
+#   become: false
+#   gather_facts: false
+#   tasks:
+#     - name: Run debug
+#       ansible.builtin.debug:
+#         var: ansible_facts
 
-- name: Test caching of facts
-  hosts: client1_vm_rhel9
+- name: Check out "test" plug-ins
+  hosts: localhost
   become: false
   gather_facts: false
+  vars:
+    all_addresses:
+      - ip: "192.168.1.10"
+        type: "fixed"
+      - ip: "192.168.1.11"
+        type: "dynamic"
+      - ip: "192.168.1.12"
+        type: "fixed"
+      - ip: "192.168.1.13"
+        type: "dynamic"
   tasks:
-    - name: Run debug
+    - name: Use set_fact, selectattr, and list filter plug-ins
+      ansible.builtin.set_fact:
+        only_fixed_addresses: "{{ all_addresses | selectattr('type', 'equalto', 'fixed') | list }}"
+    - name: Use debug to print the set fact
       ansible.builtin.debug:
-        var: ansible_facts
+        var: only_fixed_addresses
+    - name: Use debug and loop to print in a nicer way
+      ansible.builtin.debug:
+        msg: "IP address: {{ item.ip }}"
+      loop: "{{ only_fixed_addresses }}"
 
 # - name: "Ping"
 #   ansible.builtin.ping: null
