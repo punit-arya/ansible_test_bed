@@ -951,14 +951,14 @@
 #         msg: "IP address: {{ item.ip }}"
 #       loop: "{{ only_fixed_addresses }}"
 
-- name: Use callback plug-in "minimal" to minimize the playbook output
-  hosts: localhost
-  become: false
-  gather_facts: true
-  tasks:
-    - name: Use "debug" to print one key from gathered Ansible facts
-      ansible.builtin.debug:
-        var: ansible_facts["memfree_mb"]
+# - name: Use callback plug-in "minimal" to minimize the playbook output
+#   hosts: localhost
+#   become: false
+#   gather_facts: true
+#   tasks:
+#     - name: Use "debug" to print one key from gathered Ansible facts
+#       ansible.builtin.debug:
+#         var: ansible_facts["memfree_mb"]
 
 
 # - name: "Ping"
