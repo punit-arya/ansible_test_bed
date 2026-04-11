@@ -2,28 +2,35 @@
 #   hosts: all
 #   become: true
 #   gather_facts: false
-# vars:
-#   myuser: anna
 # vars_files:
 # - variables.yaml
 # - sensitive.anva
 # - alreadyexists.anva
-# - loop_items.yaml
 # - variables1.yaml
 # tasks:
 # - name: "Enforce SELinux"
 #   ansible.posix.selinux:
 #     policy: targeted
 #     state: enforcing
-# - name: Creating user {{ myuser }}
-#   ansible.builtin.user:
-#     name: "{{ myuser }}"
-#     shell: /bin/bash
-#     state: absent
-#   register: variab
-# - name: Printing variab
-#   ansible.builtin.debug:
-#     msg: Here is the contents of "{{ variab }}"
+#
+# - name: "Demo vars and user module for user: {{ myuser }}"
+#   hosts: clients-vm-rhel9
+#   become: false
+#   gather_facts: false
+#   vars:
+#     myuser: anna
+#   tasks:
+#     - name: Run user and register
+#       ansible.builtin.user:
+#         name: "{{ myuser }}"
+#         shell: /bin/bash
+#         state: absent
+#       register: variab
+#     - name: Printing variab
+#       ansible.builtin.debug:
+#         msg: Here is the contents of "{{ variab }}"
+#
+#
 # - name: Getting facts
 #   ansible.builtin.debug:
 #     var: ansible_facts["all_ipv4_addresses"]  # {{ not needed cuz it runs in a jinja template already, so it'll lead to double interpolation
@@ -67,12 +74,19 @@
 #     - vsftpd
 #     - httpd
 #     - sshd
-
-# - name: Looping over a variable
-#   ansible.builtin.debug:
-#     msg: The loop item is {{ item }}
-#   loop: "{{ loopingstuff }}"
-
+#
+# - name: Check out vars_files to read a list from a file
+#   hosts: localhost
+#   become: false
+#   gather_facts: false
+#   vars_files:
+#     - loop_items.yaml
+#   tasks:
+#     - name: Use debug and loop over the list
+#       ansible.builtin.debug:
+#         msg: The loop item is {{ item }}
+#       loop: "{{ loopingstuff }}"
+#
 # - name: Demo hashed loop items
 #   ansible.builtin.debug:
 #     msg: User name is {{ item.uname }} and group is {{ item.ugroups }}
