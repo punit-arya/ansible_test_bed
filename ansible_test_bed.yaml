@@ -974,6 +974,50 @@
 #       ansible.builtin.debug:
 #         var: ansible_facts["memfree_mb"]
 
+- name: AzureTestBed
+  hosts: localhost
+  become: false
+  connection: local
+  gather_facts: false
+  vars:
+    ansible_python_interpreter: /home/punit/lib/venv/bin/python3.13
+  tasks:
+    - name: Running azure_rm_resourcegroup
+      azure.azcollection.azure_rm_resourcegroup:
+        name: rg1
+        location: centralindia
+        state: absent
+    - name: Running azure_rm_virtualnetwork
+      azure.azcollection.azure_rm_virtualnetwork:
+        name: vn1
+        resource_group: rg1
+        address_prefixes_cidr:
+          - 172.16.0.0/16
+        state: absent
+    - name: Running azure_rm_subnet
+      azure.azcollection.azure_rm_subnet:
+        name: sn1
+        resource_group: rg1
+        virtual_network_name: vn1
+        address_prefix_cidr: "172.16.0.0/16"
+        state: absent
+    - name: Running azure_rm_virtualmachine
+      azure.azcollection.azure_rm_virtualmachine:
+        name: vm1
+        resource_group: rg1
+        virtual_network_name: vn1
+        subnet_name: sn1
+        admin_username: punit
+        admin_password: LuvH8Azure!
+        image:
+          offer: 0001-com-ubuntu-server-jammy
+          publisher: Canonical
+          sku: 22_04-lts-gen2
+          version: latest
+        vm_size: Standard_B2ts_v2
+        managed_disk_type: Standard_LRS
+        state: absent
+
 
 # - name: "Ping"
 #   ansible.builtin.ping: null
