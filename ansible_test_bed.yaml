@@ -14,7 +14,7 @@
 #     state: enforcing
 #
 # - name: "Demo vars and user module for user: {{ myuser }}"
-#   hosts: clients-vm-rhel9
+#   hosts: vm_rhel9_clients
 #   become: false
 #   gather_facts: false
 #   vars:
@@ -93,7 +93,7 @@
 #   loop: "{{ myusers }}"
 
 # - name: Demo handlers, force_handlers
-#   hosts: clients-vm-rhel9
+#   hosts: vm_rhel9_clients
 #   force_handlers: true
 #   tasks:
 #     - name: Copy file
@@ -120,7 +120,7 @@
 #         msg: The handler has run
 
 # - name: Demo flush_handlers
-#   hosts: clients-vm-centos7
+#   hosts: vm_centos7_clients
 #   gather_facts: false
 #   tasks:
 #     - name: Copy uevent file
@@ -147,8 +147,8 @@
 #   hosts: all
 #   vars:
 #     vmfilter:
-#       - client1-vm-rhel9
-#       - server1-vm-rhel10
+#       - vm_rhel9_client1
+#       - vm_rhel10_server1
 #   tasks:
 #     - name: VM-specific installation
 #       ansible.builtin.debug:
@@ -206,7 +206,7 @@
 #           ansible.builtin.shell: logger hello
 
 # - name: Demo ignore_errors
-#   hosts: clients-vm-rhel9
+#   hosts: vm_rhel9_clients
 #   gather_facts: false
 #   ignore_errors: true
 #   tasks:
@@ -222,7 +222,7 @@
 #         mode: "0600"
 
 # - name: Demo ignore_errors and force_handlers combo
-#   hosts: clients-vm-rhel9
+#   hosts: vm_rhel9_clients
 #   gather_facts: false
 #   ignore_errors: true
 #   force_handlers: false
@@ -246,7 +246,7 @@
 #         msg: The handler has run
 
 # - name: Illustrate failed_when
-#   hosts: clients-vm-centos7
+#   hosts: vm_centos7_clients
 #   gather_facts: false
 #   tasks:
 #     - name: Failing command
@@ -263,7 +263,7 @@
 #     #     cmd: "echooooo"
 
 # - name: Exemplify fail module
-#   hosts: clients-vm-centos7
+#   hosts: vm_centos7_clients
 #   gather_facts: false
 #   ignore_errors: true
 #   tasks:
@@ -279,7 +279,7 @@
 #         msg: This is the msg in debug
 
 # - name: Exemplify stat and assert
-#   hosts: clients-vm-rhel9
+#   hosts: vm_rhel9_clients
 #   gather_facts: false
 #   tasks:
 #     - name: Running stat
@@ -291,7 +291,7 @@
 #         that: statreg.stat.isdir
 
 # - name: Another example
-#   hosts: clients-vm-rhel9
+#   hosts: vm_rhel9_clients
 #   gather_facts: false
 #   vars_prompt:
 #     - name: file_size
@@ -309,7 +309,7 @@
 #       ansible.builtin.command: dd if=/dev/random of=random_file bs=1 count={{ file_size }}
 
 # - name: Non-idempotent command module
-#   hosts: clients-vm-rhel9
+#   hosts: vm_rhel9_clients
 #   become: true
 #   gather_facts: false
 #   tasks:
@@ -321,7 +321,7 @@
 #         msg: I do not get printed in the second-time execution cuz I'm not idempotent
 
 # - name: Idempotent command module
-#   hosts: clients-vm-rhel9
+#   hosts: vm_rhel9_clients
 #   become: true
 #   gather_facts: true
 #   ignore_errors: true
@@ -360,7 +360,7 @@
 #         # var: retval
 
 # - name: Demo custom facts on client
-#   hosts: clients-vm-rhel9
+#   hosts: vm_rhel9_clients
 #   gather_facts: false
 #   tasks:
 #     - name: Populating the facts file
@@ -372,7 +372,7 @@
 #           [localfacts]
 #           type: client
 # - name: Demo custom fact on servers
-#   hosts: servers-vm-rhel9
+#   hosts: vm_rhel9_servers
 #   gather_facts: false
 #   tasks:
 #     - name: Populating the facts file
@@ -385,7 +385,7 @@
 #           type: server
 
 # - name: Elucidate find module
-#   hosts: clients-vm-rhel9
+#   hosts: vm_rhel9_clients
 #   become: false
 #   gather_facts: false
 #   tasks:
@@ -412,7 +412,7 @@
 #       with_items: "{{ output.files }}"
 
 # - name: Illustrate templates
-#   hosts: server1-vm-rhel9
+#   hosts: vm_rhel9_server1
 #   become: true
 #   gather_facts: true
 #   vars:
@@ -442,7 +442,7 @@
 #         mode: "0644"
 
 # - name: Show roles
-#   hosts: server1-vm-rhel9
+#   hosts: vm_rhel9_server1
 #   become: true
 #   gather_facts: true
 #   pre_tasks:
@@ -453,7 +453,7 @@
 #     - role: geerlingguy.nginx
 
 # - name: Regurgitate lineinfile with validate and regexp
-#   hosts: clients-vm-rhel9
+#   hosts: vm_rhel9_clients
 #   become: true
 #   gather_facts: false
 #   tasks:
@@ -491,16 +491,16 @@
 #   tags: tag2
 
 # - name: Show delegate_to
-#   hosts: clients-vm-rhel9
+#   hosts: vm_rhel9_clients
 #   become: true
 #   gather_facts: false
 #   tasks:
-#     - name: Copy file from localhost to server1-vm-rhel9
+#     - name: Copy file from localhost to vm_rhel9_server1
 #       ansible.builtin.copy:
 #         src: /etc/hosts
 #         dest: /tmp/hosts
 #         mode: "0644"
-#       delegate_to: server1-vm-rhel9
+#       delegate_to: vm_rhel9_server1
 #     - name: Verify
 #       ansible.builtin.stat:
 #         path: /tmp/hosts
@@ -510,7 +510,7 @@
 #         var: stat_output
 #
 # - name: See delegate_to again
-#   hosts: server1-vm-rhel9
+#   hosts: vm_rhel9_server1
 #   become: true
 #   gather_facts: false
 #   tasks:
@@ -525,11 +525,11 @@
 #         enabled: true
 #     - name: Use uri
 #       ansible.builtin.uri:
-#         url: http://server1-vm-rhel9
+#         url: http://vm_rhel9_server1
 #       delegate_to: localhost
 
 # - name: Check out synchronize
-#   hosts: clients-vm-rhel9
+#   hosts: vm_rhel9_clients
 #   become: false
 #   gather_facts: false
 #   tasks:
@@ -617,7 +617,7 @@
 #         msg: "{{ ansible_facts['default_ipv4']['address'] | ansible.utils.ipaddr('int') }}"
 
 # - name: Checking out map
-#   hosts: clients-vm-rhel9
+#   hosts: vm_rhel9_clients
 #   become: true
 #   gather_facts: false
 #   ignore_errors: false
@@ -683,7 +683,7 @@
 #         msg: "The flattened list is: {{ flattened }}"
 
 # - name: Examine subelements filter
-#   hosts: clients-vm-rhel9
+#   hosts: vm_rhel9_clients
 #   become: true
 #   gather_facts: true
 #   vars:
@@ -781,7 +781,7 @@
 #         var: user_role_users
 
 # - name: Lesson 11 lab
-#   hosts: server1-vm-rhel9
+#   hosts: vm_rhel9_server1
 #   become: true
 #   gather_facts: false
 #   vars_prompt:
@@ -805,7 +805,7 @@
 #         zone: "{{ myzone | default(omit) }}"
 
 # - name: Enlighten look-up plugin type
-#   hosts: clients_vm_rhel9
+#   hosts: vm_rhel9_clients
 #   become: true
 #   gather_facts: false
 #   vars:
@@ -840,7 +840,7 @@
 #   tasks:
 #     - name: Run debug module and "url" type of lookup type of plug-in
 #       ansible.builtin.debug:
-#         msg: The URL "http://server1-vm-rhel9" shows {{ lookup('url', 'http://server1-vm-rhel9') }}
+#         msg: The URL "http://vm_rhel9_server1" shows {{ lookup('url', 'http://vm_rhel9_server1') }}
 #
 # - name: Check out query parameter of lookup plug-in
 #   hosts: localhost
@@ -858,7 +858,7 @@
 #       loop: "{{ contens }}"
 #
 # - name: Work on query Jinja function
-#   hosts: clients_vm_rhel9
+#   hosts: vm_rhel9_clients
 #   become: true
 #   gather_facts: false
 #   vars:
@@ -877,7 +877,7 @@
 #       loop: "{{ query('lines', 'cat users.txt') }}"
 
 # - name: Demonstrate "env" and "template" lookup plug-ins
-#   hosts: clients_vm_rhel9
+#   hosts: vm_rhel9_clients
 #   become: false
 #   gather_facts: false
 #   vars:
@@ -918,7 +918,7 @@
 #         - "{{ query('lines', 'cat /etc/shadow') }}"
 
 # - name: Testing "fileglob" lookup plug-in
-#   hosts: client1_vm_rhel9
+#   hosts: vm_rhel9_client1
 #   become: false
 #   gather_facts: true
 #   tasks:
@@ -931,7 +931,7 @@
 #         msg: "{{ lookup('fileglob', '~/.*~') }}"
 #
 # - name: Test caching of facts
-#   hosts: client1_vm_rhel9
+#   hosts: vm_rhel9_client1
 #   become: false
 #   gather_facts: false
 #   tasks:
@@ -974,49 +974,52 @@
 #       ansible.builtin.debug:
 #         var: ansible_facts["memfree_mb"]
 
-- name: AzureTestBed
-  hosts: localhost
-  become: false
-  connection: local
-  gather_facts: false
-  vars:
-    ansible_python_interpreter: /home/punit/lib/venv/bin/python3.13
-  tasks:
-    - name: Running azure_rm_resourcegroup
-      azure.azcollection.azure_rm_resourcegroup:
-        name: rg1
-        location: centralindia
-        state: absent
-    - name: Running azure_rm_virtualnetwork
-      azure.azcollection.azure_rm_virtualnetwork:
-        name: vn1
-        resource_group: rg1
-        address_prefixes_cidr:
-          - 172.16.0.0/16
-        state: absent
-    - name: Running azure_rm_subnet
-      azure.azcollection.azure_rm_subnet:
-        name: sn1
-        resource_group: rg1
-        virtual_network_name: vn1
-        address_prefix_cidr: "172.16.0.0/16"
-        state: absent
-    - name: Running azure_rm_virtualmachine
-      azure.azcollection.azure_rm_virtualmachine:
-        name: vm1
-        resource_group: rg1
-        virtual_network_name: vn1
-        subnet_name: sn1
-        admin_username: punit
-        admin_password: LuvH8Azure!
-        image:
-          offer: 0001-com-ubuntu-server-jammy
-          publisher: Canonical
-          sku: 22_04-lts-gen2
-          version: latest
-        vm_size: Standard_B2ts_v2
-        managed_disk_type: Standard_LRS
-        state: absent
+# - name: AzureTestBed
+#   hosts: localhost
+#   become: false
+#   connection: local
+#   gather_facts: false
+#   vars:
+#     ansible_python_interpreter: /home/punit/lib/venv/bin/python3.13
+#   tasks:
+#     - name: Running azure_rm_resourcegroup
+#       azure.azcollection.azure_rm_resourcegroup:
+#         name: rg1
+#         location: centralindia
+#         state: absent
+#     - name: Running azure_rm_virtualnetwork
+#       azure.azcollection.azure_rm_virtualnetwork:
+#         name: vn1
+#         resource_group: rg1
+#         address_prefixes_cidr:
+#           - 172.16.0.0/16
+#         state: absent
+#     - name: Running azure_rm_subnet
+#       azure.azcollection.azure_rm_subnet:
+#         name: sn1
+#         resource_group: rg1
+#         virtual_network_name: vn1
+#         address_prefix_cidr: "172.16.0.0/16"
+#         state: absent
+#     - name: Running azure_rm_virtualmachine
+#       azure.azcollection.azure_rm_virtualmachine:
+#         name: vm1
+#         resource_group: rg1
+#         virtual_network_name: vn1
+#         subnet_name: sn1
+#         admin_username: punit
+#         admin_password: LuvH8Azure!
+#         image:
+#           offer: 0001-com-ubuntu-server-jammy
+#           publisher: Canonical
+#           sku: 22_04-lts-gen2
+#           version: latest
+#         vm_size: Standard_B2ts_v2
+#         managed_disk_type: Standard_LRS
+#         state: absent
+
+- name: Check out Podman
+  hosts: vm_rhel9_clients
 
 
 # - name: "Ping"

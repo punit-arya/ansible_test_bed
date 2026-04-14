@@ -1,14 +1,14 @@
-centos7:
+vm_centos7:
     children:
-        clients_vm_centos7:
+        vm_centos7_clients:
             hosts:
-                client1_vm_centos7:
+                vm_centos7_client1:
                     ansible_host: 172.16.65.10
             vars:
                 enabled: True
-        servers_vm_centos7:
+        vm_centos7_servers:
             hosts:
-                server1_vm_centos7:
+                vm_centos7_server1:
                     ansible_host: 172.16.65.15
     vars:
         ansible_python_interpreter: /opt/rh/rh-python38/root/bin/python3.8
@@ -17,22 +17,22 @@ centos7:
         status: needs
         enabled: False
 
-rhel9:
+vm_rhel9:
     children:
-        clients_vm_rhel9:
+        vm_rhel9_clients:
             hosts:
-                client1_vm_rhel9:
+                vm_rhel9_client1:
                     ansible_host: 172.16.65.30
-        servers_vm_rhel9:
+        vm_rhel9_servers:
             hosts:
-                server1_vm_rhel9:
+                vm_rhel9_server1:
                     ansible_host: 172.16.65.35
                     enabled: False
                     status: needs
-                server2_vm_rhel9:
+                vm_rhel9_server2:
                     ansible_host: 172.16.65.36
                     enabled:
-                server3_vm_rhel9:
+                vm_rhel9_server3:
                     ansible_host: 172.16.65.37
                     enabled: None
     vars:
@@ -41,22 +41,22 @@ rhel9:
         ansible_python_interpreter: /usr/bin/python
         galaxy_api_key: "APIKEY"
 
-rhel10:
+vm_rhel10:
     children:
-        clients_vm_rhel10:
+        vm_rhel10_clients:
             hosts:
-                client1_vm_rhel10:
+                vm_rhel10_client1:
                     ansible_host: 172.16.65.40
-        servers_vm_rhel10:
+        vm_rhel10_servers:
             hosts:
-                server1_vm_rhel10:
+                vm_rhel10_server1:
                     ansible_host: 172.16.65.45
                     enabled: False
                     status: needs
-                server2_vm_rhel10:
+                vm_rhel10_server2:
                     ansible_host: 172.16.65.46
                     enabled:
-                server3_vm_rhel10:
+                vm_rhel10_server3:
                     ansible_host: 172.16.65.47
                     enabled: None
     vars:
