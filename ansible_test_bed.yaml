@@ -1018,36 +1018,39 @@
 #         managed_disk_type: Standard_LRS
 #         state: absent
 
-- name: Check out Podman
-  hosts: vm-rhel9-server1
-  collections:
-    - containers.podman
-  gather_facts: false
-  tasks:
-    - name: Use package to install podman
-      become: true
-      ansible.builtin.package:
-        name: podman
-    - name: Use podman_image to pull an image
-      podman_image:
-        name: docker.io/httpd
-    - name: Use copy to write to a file
-      ansible.builtin.copy:
-        content: Yellow!
-        dest: /tmp/index.html
-        mode: "0664"
-    - name: Use podman_container to create a container
-      podman_container:
-        name: httpd_test
-        image: httpd
-        state: started
-        detach: true
-        exposed_ports:
-          - 80
-        # ports:
-        #   - 4444:80
-        # volumes:
-        #   /tmp:/usr/local/apache2/htdocs
+# - name: Check out Podman
+#   hosts: vm-rhel9-server1
+#   collections:
+#     - containers.podman
+#   gather_facts: false
+#   tasks:
+#     - name: Use package to install podman
+#       become: true
+#       ansible.builtin.package:
+#         name: podman
+#     - name: Use podman_image to pull an image
+#       podman_image:
+#         name: docker.io/httpd
+#     - name: Use copy to write to a file
+#       ansible.builtin.copy:
+#         content: Yellow!
+#         dest: /tmp/index.html
+#         mode: "0664"
+#     - name: Use podman_container to create a container
+#       podman_container:
+#         name: httpd_test
+#         image: httpd
+#         state: started
+#         detach: true
+#         exposed_ports:
+#           - 80
+#         ports:
+#           - 4444:80
+#         volumes:
+#           /tmp:/usr/local/apache2/htdocs
+
+- import_playbook: sync_time.yaml # 'Tis a module! and an unnamed play!
+
 
 
 # - name: "Ping"
