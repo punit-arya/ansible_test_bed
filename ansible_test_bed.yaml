@@ -147,8 +147,8 @@
 #   hosts: all
 #   vars:
 #     vmfilter:
-#       - vm_rhel9_client1
-#       - vm_rhel10_server1
+#       - vm-rhel9-client1
+#       - vm-rhel10-server1
 #   tasks:
 #     - name: VM-specific installation
 #       ansible.builtin.debug:
@@ -412,7 +412,7 @@
 #       with_items: "{{ output.files }}"
 
 # - name: Illustrate templates
-#   hosts: vm_rhel9_server1
+#   hosts: vm-rhel9-server1
 #   become: true
 #   gather_facts: true
 #   vars:
@@ -442,7 +442,7 @@
 #         mode: "0644"
 
 # - name: Show roles
-#   hosts: vm_rhel9_server1
+#   hosts: vm-rhel9-server1
 #   become: true
 #   gather_facts: true
 #   pre_tasks:
@@ -495,12 +495,12 @@
 #   become: true
 #   gather_facts: false
 #   tasks:
-#     - name: Copy file from localhost to vm_rhel9_server1
+#     - name: Copy file from localhost to vm-rhel9-server1
 #       ansible.builtin.copy:
 #         src: /etc/hosts
 #         dest: /tmp/hosts
 #         mode: "0644"
-#       delegate_to: vm_rhel9_server1
+#       delegate_to: vm-rhel9-server1
 #     - name: Verify
 #       ansible.builtin.stat:
 #         path: /tmp/hosts
@@ -510,7 +510,7 @@
 #         var: stat_output
 #
 # - name: See delegate_to again
-#   hosts: vm_rhel9_server1
+#   hosts: vm-rhel9-server1
 #   become: true
 #   gather_facts: false
 #   tasks:
@@ -525,7 +525,7 @@
 #         enabled: true
 #     - name: Use uri
 #       ansible.builtin.uri:
-#         url: http://vm_rhel9_server1
+#         url: http://vm-rhel9-server1
 #       delegate_to: localhost
 
 # - name: Check out synchronize
@@ -781,7 +781,7 @@
 #         var: user_role_users
 
 # - name: Lesson 11 lab
-#   hosts: vm_rhel9_server1
+#   hosts: vm-rhel9-server1
 #   become: true
 #   gather_facts: false
 #   vars_prompt:
@@ -840,7 +840,7 @@
 #   tasks:
 #     - name: Run debug module and "url" type of lookup type of plug-in
 #       ansible.builtin.debug:
-#         msg: The URL "http://vm_rhel9_server1" shows {{ lookup('url', 'http://vm_rhel9_server1') }}
+#         msg: The URL "http://vm-rhel9-server1" shows {{ lookup('url', 'http://vm-rhel9-server1') }}
 #
 # - name: Check out query parameter of lookup plug-in
 #   hosts: localhost
@@ -918,7 +918,7 @@
 #         - "{{ query('lines', 'cat /etc/shadow') }}"
 
 # - name: Testing "fileglob" lookup plug-in
-#   hosts: vm_rhel9_client1
+#   hosts: vm-rhel9-client1
 #   become: false
 #   gather_facts: true
 #   tasks:
@@ -931,7 +931,7 @@
 #         msg: "{{ lookup('fileglob', '~/.*~') }}"
 #
 # - name: Test caching of facts
-#   hosts: vm_rhel9_client1
+#   hosts: vm-rhel9-client1
 #   become: false
 #   gather_facts: false
 #   tasks:
