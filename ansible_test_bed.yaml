@@ -847,7 +847,7 @@
 #   become: false
 #   gather_facts: false
 #   vars:
-#     contens: "{{ query('file', '/home/punit/.ssh/authorized_keys') }}"
+#     contents: "{{ query('file', '/home/punit/.ssh/authorized_keys') }}"
 #   tasks:
 #     - name: Run debug to print the list
 #       ansible.builtin.debug:
@@ -855,7 +855,7 @@
 #     - name: Run debug to print the list again
 #       ansible.builtin.debug:
 #         msg: "ITEM ITEM ITEM: {{ item }}"
-#       loop: "{{ contens }}"
+#       loop: "{{ contents }}"
 #
 # - name: Work on query Jinja function
 #   hosts: vm_rhel9_clients
