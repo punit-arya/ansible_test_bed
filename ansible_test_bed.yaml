@@ -1092,6 +1092,16 @@
 #           /tmp:/usr/local/apache2/htdocs
 #
 # - import_playbook: sync_time.yaml # 'Tis a module! and an unnamed play at that!
+#
+#
+# - name: Demonstrate "include_tasks"
+#   hosts: remote
+#   tasks:
+#     - name: Run include_tasks
+#       ansible.builtin.include_tasks: sync_time_only_tasks.yaml
+#       when: >
+#         ansible_facts["distribution"] == "CentOS" and
+#         ansible_facts["distribution_major_version"] == "7"
 
 
 - name: Demonstrate "include_tasks"
