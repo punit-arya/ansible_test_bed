@@ -2,16 +2,16 @@
 #   hosts: all
 #   become: true
 #   gather_facts: false
-# vars_files:
-# - variables.yaml
-# - sensitive.anva
-# - alreadyexists.anva
-# - variables1.yaml
-# tasks:
-# - name: "Enforce SELinux"
-#   ansible.posix.selinux:
-#     policy: targeted
-#     state: enforcing
+#   vars_files:
+#     - variables.yaml
+#     # - sensitive.anva
+#     # - alreadyexists.anva
+#     - variables1.yaml
+#   tasks:
+#     - name: "Enforce SELinux"
+#       ansible.posix.selinux:
+#         policy: targeted
+#         state: enforcing
 #
 # - name: "Demo vars and user module for user: {{ myuser }}"
 #   hosts: vm_rhel9_clients
@@ -32,48 +32,86 @@
 #
 #
 # - name: Getting facts
-#   ansible.builtin.debug:
-#     var: ansible_facts["all_ipv4_addresses"]  # {{ not needed cuz it runs in a jinja template already, so it'll lead to double interpolation
-#     var: ansible_facts["memory_mb"]["swap"]["free"]
-#     msg: >
-#       IP of this host is {{ ansible_facts.default_ipv4.address }}
+#   tasks:
+#     - name: Run debug
+#       ansible.builtin.debug:
+#         # var: ansible_facts["all_ipv4_addresses"]  # {{ not needed cuz it runs in a jinja template already, so it'll lead to double interpolation
+#         var: ansible_facts["memory_mb"]["swap"]["free"]
+#         msg: >
+#           IP of this host is {{ ansible_facts.default_ipv4.address }}
+#
+#
 # - name: Demo set_fact
-#   ansible.builtin.set_fact:
-#     myfirstfact: saturday
-#     mysecondfact: evening
-# - name: Demo again.
-#   ansible.builtin.debug:
-#     msg: Recording this on {{ myfirstfact }} {{ mysecondfact }}
+#   tasks:
+#     - name: Run set_fact
+#       ansible.builtin.set_fact:
+#         myfirstfact: saturday
+#         mysecondfact: evening
+#
+#
+# - name: Demo again
+#   tasks:
+#     - name: Run debug
+#       ansible.builtin.debug:
+#         msg: Recording this on {{ myfirstfact }} {{ mysecondfact }}
+#
+#
 # - name: New task to demo set_fact
-#   ansible.builtin.debug:
-#     msg: it is still {{ myfirstfact }} {{ mysecondfact }}
+#   tasks:
+#     - name: Run debug
+#       ansible.builtin.debug:
+#         msg: it is still {{ myfirstfact }} {{ mysecondfact }}
+#
+#
 # - name: Demo ansible_mounts in ansible_facts
-#   ansible.builtin.debug:
-#     msg: Value is {{ ansible_facts["mounts"][29]["block_size"] }}
+#   tasks:
+#     - name: Run debug
+#       ansible.builtin.debug:
+#         msg: Value is {{ ansible_facts["mounts"][29]["block_size"] }}
+#
+#
 # - name: Demo register
-#   register: dateval
-#   ansible.builtin.command:
-#     cmd: date
+#   tasks:
+#     - name: Run command
+#       ansible.builtin.command:
+#         cmd: date
+#       register: dateval
+#
+#
 # - name: Debug
-#   ansible.builtin.debug:
-#     # var: dateval.stdout
-#     var: dateval["stdout"]
+#   tasks:
+#     - name: Run debug
+#       ansible.builtin.debug:
+#         # var: dateval.stdout
+#         var: dateval["stdout"]
+#
+#
 # - name: Demo vault for new file
-#   ansible.builtin.debug:
-#     msg: >
-#       This is the contents of the new vault file: {{ password }}
+#   tasks:
+#     - name: Run debug
+#       ansible.builtin.debug:
+#         msg: >
+#           This is the contents of the new vault file: {{ password }}
+#
+#
 # - name: Demo vault for existing file
-#   ansible.builtin.debug:
-#     msg: >
-#       This is the contents of the new vault file: {{ password1 }}
-
+#   tasks:
+#     - name: Run debug
+#       ansible.builtin.debug:
+#         msg: >
+#           This is the contents of the new vault file: {{ password1 }}
+#
+#
 # - name: Demo loop
-#   ansible.builtin.debug:
-#     msg: "{{ item }}"
-#   loop:
-#     - vsftpd
-#     - httpd
-#     - sshd
+#   tasks:
+#     - name: Run debug
+#       ansible.builtin.debug:
+#         msg: "{{ item }}"
+#       loop:
+#         - vsftpd
+#         - httpd
+#         - sshd
+#
 #
 # - name: Check out vars_files to read a list from a file
 #   hosts: localhost
@@ -87,11 +125,15 @@
 #         msg: The loop item is {{ item }}
 #       loop: "{{ loopingstuff }}"
 #
+#
 # - name: Demo hashed loop items
-#   ansible.builtin.debug:
-#     msg: User name is {{ item.uname }} and group is {{ item.ugroups }}
-#   loop: "{{ myusers }}"
-
+#   tasks:
+#     - name: Run debug
+#       ansible.builtin.debug:
+#         msg: User name is {{ item.uname }} and group is {{ item.ugroups }}
+#       loop: "{{ myusers }}"
+#
+#
 # - name: Demo handlers, force_handlers
 #   hosts: vm_rhel9_clients
 #   force_handlers: true
@@ -118,7 +160,7 @@
 #     - name: Restart Web
 #       ansible.builtin.debug:
 #         msg: The handler has run
-
+#
 # - name: Demo flush_handlers
 #   hosts: vm_centos7_clients
 #   gather_facts: false
@@ -141,7 +183,7 @@
 #     - name: Copy handler
 #       ansible.builtin.debug:
 #         msg: The handler has run
-
+#
 # - name: Demo when
 #   gather_facts: true
 #   hosts: all
@@ -161,7 +203,7 @@
 #         #  # - "13" in ansible_date_time["day"]
 #         # - ansible_memfree_mb > 512
 #         - item["size_available"] < 10485760000 and item["mount"] == "/"
-
+#
 # - name: Demo vars_prompt
 #   hosts: localhost
 #   gather_facts: false
@@ -180,7 +222,7 @@
 #       ansible.builtin.debug:
 #         msg: echo passwd contains user {{ user_name }}
 #       when: passwd_contents["stdout"].find(user_name) != -1
-
+#
 # - name: Demo block with rescue and always keywords
 #   hosts: remote
 #   tasks:
@@ -204,7 +246,7 @@
 #       always:
 #         - name: Log a message
 #           ansible.builtin.shell: logger hello
-
+#
 # - name: Demo ignore_errors
 #   hosts: vm_rhel9_clients
 #   gather_facts: false
@@ -220,7 +262,7 @@
 #         src: /tmp/uevent
 #         dest: /tmp
 #         mode: "0600"
-
+#
 # - name: Demo ignore_errors and force_handlers combo
 #   hosts: vm_rhel9_clients
 #   gather_facts: false
@@ -244,7 +286,7 @@
 #     - name: Demogorgon  # Runs if debug is commented, because it becomes the handler of the last task, because the shell task is not idempotent, and only if the shell task doesn't fail
 #       ansible.builtin.debug:
 #         msg: The handler has run
-
+#
 # - name: Illustrate failed_when
 #   hosts: vm_centos7_clients
 #   gather_facts: false
@@ -261,7 +303,7 @@
 #     # - name: Should fail
 #     #   ansible.builtin.command:
 #     #     cmd: "echooooo"
-
+#
 # - name: Exemplify fail module
 #   hosts: vm_centos7_clients
 #   gather_facts: false
@@ -277,7 +319,7 @@
 #     - name: Running debug
 #       ansible.builtin.debug:
 #         msg: This is the msg in debug
-
+#
 # - name: Exemplify stat and assert
 #   hosts: vm_rhel9_clients
 #   gather_facts: false
@@ -289,7 +331,7 @@
 #     - name: Assert that /etc/hosts is a directory
 #       ansible.builtin.assert:
 #         that: statreg.stat.isdir
-
+#
 # - name: Another example
 #   hosts: vm_rhel9_clients
 #   gather_facts: false
@@ -307,7 +349,7 @@
 #         success_msg: file size IS between 1 and 10, continuing
 #     - name: Create file
 #       ansible.builtin.command: dd if=/dev/random of=random_file bs=1 count={{ file_size }}
-
+#
 # - name: Non-idempotent command module
 #   hosts: vm_rhel9_clients
 #   become: true
@@ -319,7 +361,7 @@
 #     - name: Run debug
 #       ansible.builtin.debug:
 #         msg: I do not get printed in the second-time execution cuz I'm not idempotent
-
+#
 # - name: Idempotent command module
 #   hosts: vm_rhel9_clients
 #   become: true
@@ -337,7 +379,7 @@
 #     - name: Running debug
 #       ansible.builtin.debug:
 #         msg: Debug has run
-
+#
 # - name: Illustrate blockinfile and stat(checksum_algorithm)
 #   hosts: rhel9
 #   gather_facts: false
@@ -358,7 +400,7 @@
 #       ansible.builtin.debug:
 #         msg: The checksum is {{ retval['stat']['checksum'] }}
 #         # var: retval
-
+#
 # - name: Demo custom facts on client
 #   hosts: vm_rhel9_clients
 #   gather_facts: false
@@ -383,7 +425,7 @@
 #         block: |
 #           [localfacts]
 #           type: server
-
+#
 # - name: Elucidate find module
 #   hosts: vm_rhel9_clients
 #   become: false
@@ -410,7 +452,7 @@
 #           fact_caching_connection = localhost:6379:0
 #         state: absent
 #       with_items: "{{ output.files }}"
-
+#
 # - name: Illustrate templates
 #   hosts: vm-rhel9-server1
 #   become: true
@@ -429,7 +471,7 @@
 #         src: vsftpd.j2
 #         dest: /etc/vsftpd/vsftpd.conf
 #         mode: "0644"
-
+#
 # - name: Exemplify templates
 #   hosts: remote
 #   become: false
@@ -440,7 +482,7 @@
 #         src: hosts.j2
 #         dest: /tmp/hosts
 #         mode: "0644"
-
+#
 # - name: Show roles
 #   hosts: vm-rhel9-server1
 #   become: true
@@ -451,7 +493,7 @@
 #         state: absent
 #   roles:
 #     - role: geerlingguy.nginx
-
+#
 # - name: Regurgitate lineinfile with validate and regexp
 #   hosts: vm_rhel9_clients
 #   become: true
@@ -463,7 +505,7 @@
 #         # regexp: "^Defaults"
 #         line: "Defaults timestamp_type=global,timestamp_timeout=240"
 #         validate: visudo -cf %s
-
+#
 # - name: Exemplify tags, play one
 #   hosts: localhost
 #   become: false
@@ -489,7 +531,7 @@
 #       ansible.builtin.debug:
 #         msg: Task 4
 #   tags: tag2
-
+#
 # - name: Show delegate_to
 #   hosts: vm_rhel9_clients
 #   become: true
@@ -527,7 +569,7 @@
 #       ansible.builtin.uri:
 #         url: http://vm-rhel9-server1
 #       delegate_to: localhost
-
+#
 # - name: Check out synchronize
 #   hosts: vm_rhel9_clients
 #   become: false
@@ -537,7 +579,7 @@
 #       ansible.posix.synchronize:
 #         src: /ssfsfa
 #         dest: /tmp
-
+#
 # - name: Demo format_phone_number
 #   hosts: localhost
 #   become: false
@@ -548,7 +590,7 @@
 #     - name: Running debug
 #       ansible.builtin.debug:
 #         msg: The formatted number is {{ number | thearya.format_phone_number.format_phone_number }}
-
+#
 # - name: Show off types
 #   hosts: localhost
 #   become: false
@@ -579,7 +621,7 @@
 #         that: rainy
 #         success_msg: "rainy is a Boolean"
 #         fail_msg: "rainy1 is not a Boolean"
-
+#
 # - name: Illustrate ipaddr module
 #   hosts: localhost
 #   become: false
@@ -615,7 +657,7 @@
 #     - name: Convert to the integer format
 #       ansible.builtin.debug:
 #         msg: "{{ ansible_facts['default_ipv4']['address'] | ansible.utils.ipaddr('int') }}"
-
+#
 # - name: Checking out map
 #   hosts: vm_rhel9_clients
 #   become: true
@@ -661,7 +703,7 @@
 #     - name: Running debug (printing var)
 #       ansible.builtin.debug:
 #         var: myfactvar
-
+#
 # - name: Learning flatten filter
 #   hosts: localhost
 #   become: false
@@ -681,7 +723,7 @@
 #     - name: Running debug to show the flattening
 #       ansible.builtin.debug:
 #         msg: "The flattened list is: {{ flattened }}"
-
+#
 # - name: Examine subelements filter
 #   hosts: vm_rhel9_clients
 #   become: true
@@ -716,7 +758,7 @@
 #         msg: "Server: {{ item.0.name }}, Application: {{ item.1.name }}, State: {{ item.1.state }}"
 #       loop: "{{ lookup('subelements', servers, 'applications') }}"
 #       tags: debug
-
+#
 # - name: Checking out dict2items filter
 #   hosts: localhost
 #   become: false
@@ -779,7 +821,7 @@
 #     - name: Running debug to print the filtered out members of the dict and again
 #       ansible.builtin.debug:
 #         var: user_role_users
-
+#
 # - name: Lesson 11 lab
 #   hosts: vm-rhel9-server1
 #   become: true
@@ -803,7 +845,7 @@
 #         service: "{{ myservice }}"
 #         state: "{{ mystate | default('enabled', True) }}"
 #         zone: "{{ myzone | default(omit) }}"
-
+#
 # - name: Enlighten look-up plugin type
 #   hosts: vm_rhel9_clients
 #   become: true
@@ -875,7 +917,7 @@
 #         password: "{{ mypassword | password_hash('sha512') }}"
 #         update_password: on_create
 #       loop: "{{ query('lines', 'cat users.txt') }}"
-
+#
 # - name: Demonstrate "env" and "template" lookup plug-ins
 #   hosts: vm_rhel9_clients
 #   become: false
@@ -916,7 +958,7 @@
 #       loop:
 #         - "{{ query('lines', 'cat /etc/passwd') }}"
 #         - "{{ query('lines', 'cat /etc/shadow') }}"
-
+#
 # - name: Testing "fileglob" lookup plug-in
 #   hosts: vm-rhel9-client1
 #   become: false
@@ -938,7 +980,7 @@
 #     - name: Run debug
 #       ansible.builtin.debug:
 #         var: ansible_facts
-
+#
 # - name: Check out "test" plug-ins
 #   hosts: localhost
 #   become: false
@@ -964,7 +1006,7 @@
 #       ansible.builtin.debug:
 #         msg: "IP address: {{ item.ip }}"
 #       loop: "{{ only_fixed_addresses }}"
-
+#
 # - name: Use callback plug-in "minimal" to minimize the playbook output
 #   hosts: localhost
 #   become: false
@@ -973,7 +1015,7 @@
 #     - name: Use "debug" to print one key from gathered Ansible facts
 #       ansible.builtin.debug:
 #         var: ansible_facts["memfree_mb"]
-
+#
 # - name: AzureTestBed
 #   hosts: localhost
 #   become: false
@@ -1017,7 +1059,7 @@
 #         vm_size: Standard_B2ts_v2
 #         managed_disk_type: Standard_LRS
 #         state: absent
-
+#
 # - name: Check out Podman
 #   hosts: vm-rhel9-server1
 #   collections:
@@ -1048,7 +1090,7 @@
 #           - 4444:80
 #         volumes:
 #           /tmp:/usr/local/apache2/htdocs
-
+#
 # - import_playbook: sync_time.yaml # 'Tis a module! and an unnamed play at that!
 
 
