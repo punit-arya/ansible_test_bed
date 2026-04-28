@@ -8040,3 +8040,4 @@ dkms.conf
 # MY ADDITIONS
 *.anva
 ansible_vault_password.txt
+.*
