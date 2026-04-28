@@ -1104,14 +1104,20 @@
 #         ansible_facts["distribution_major_version"] == "7"
 
 
-- name: Demonstrate "include_tasks"
-  hosts: remote
-  tasks:
-    - name: Run include_tasks
-      ansible.builtin.include_tasks: sync_time_only_tasks.yaml
-      when: >
-        ansible_facts["distribution"] == "CentOS" and
-        ansible_facts["distribution_major_version"] == "7"
+# - name: HTTPAPI plug-in
+#   hosts: router
+#   become: false
+#   gather_facts: true
+#   connection: httpapi
+#   vars_files:
+#     router_credentials.anva
+#   tasks:
+#     - name: Use debug
+#       ansible.builtin.debug:
+#         var: ansible_facts["uptime_seconds"]
+#     - name: Use debug
+#       ansible.builtin.debug:
+#         var: ansible_httpapi_password
 
 
 # - name: "Ping"

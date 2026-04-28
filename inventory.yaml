@@ -1,3 +1,6 @@
+router:
+  hosts: 192.168.1.1
+
 vm_centos7:
     children:
         vm_centos7_clients:
