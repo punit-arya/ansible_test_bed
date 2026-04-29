@@ -1104,22 +1104,6 @@
 #         ansible_facts["distribution_major_version"] == "7"
 
 
-# - name: HTTPAPI plug-in
-#   hosts: router
-#   become: false
-#   gather_facts: true
-#   connection: httpapi
-#   vars_files:
-#     router_credentials.anva
-#   tasks:
-#     - name: Use debug
-#       ansible.builtin.debug:
-#         var: ansible_facts["uptime_seconds"]
-#     - name: Use debug
-#       ansible.builtin.debug:
-#         var: ansible_httpapi_password
-
-
 # - name: "Ping"
 #   ansible.builtin.ping: null
 # - name: "Print"
